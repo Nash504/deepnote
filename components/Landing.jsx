@@ -18,13 +18,13 @@ export default function Home() {
           <p className="font-light text-xl sm:text-2xl text-center lg:text-left">
           Query your study materials with AI. Unlock rapid understanding and pinpoint key information within your notes and texts. Fast, focused learning.
           </p>
-          <Button className="bg-lime-300 text-black font-bold text-2xl py-2 px-4 p-6 rounded-4xl hover:bg-lime-400 transition duration-300 ease-in-out w-full sm:w-auto mt-4 lg:mt-0">
+          <Button className="bg-lime-300 text-black font-bold text- py-2 px-4 p-6 rounded-4xl hover:bg-lime-400 transition duration-300 ease-in-out w-full sm:w-auto mt-4 lg:mt-0">
             Get Started
           </Button>
         </div>
         <div className="flex justify-center flex-1 mt-8 lg:mt-0">
           <Card className="w-full max-w-[350px]">
-           
+           {/* IM GAY Take TURN LEft cloaset */}
             <CardHeader>
               <CardTitle>Create project</CardTitle>
               <CardDescription>Deploy your new project in one-click.</CardDescription>
