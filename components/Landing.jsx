@@ -5,9 +5,10 @@ import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { ArrowRight, Plus, Mic } from "lucide-react"; // Import necessary icons
-import { InteractiveHoverButton } from "./magicui/interactive-hover-button"; // Assuming this is still used elsewhere or intended
+import { BorderBeam } from "./magicui/border-beam";
 import { useInView } from 'react-intersection-observer'; // Import useInView
-
+import { Skeleton } from "./ui/skeleton";
+import { ShineBorder } from "./magicui/shine-border";
 export default function Home() {
   // Use the useInView hook to detect when the component is in view
   // triggerOnce: true ensures the animation only happens once
@@ -58,22 +59,28 @@ export default function Home() {
              {/* Chat Message Area */}
              <div className="flex-1 overflow-y-auto p-2 space-y-4"> {/* Added flex-1 for scrolling, padding, and spacing */}
                  {/* Example AI Message Bubble */}
-                 <div className="flex justify-start">
-                     <div className="bg-gray-700 text-white p-3 rounded-lg max-w-[80%]"> {/* Darker gray background for AI */}
+                 <div className="flex justify-start gap-3">
+                 <Skeleton className="h-12 w-12 rounded-full" />
+                     <div className="bg-gray-700 text-sm text-white p-3 rounded-lg max-w-[80%]"> {/* Darker gray background for AI */}
                          Operating systems are the unsung heroes of our digital lives, the foundational software that makes our computers, smartphones, and even smartwatches actually work. Think of an operating system, often abbreviated as OS, as the conductor of a digital orchestra.
                      </div>
                  </div>
                  {/* Example User Message Bubble */}
-                 <div className="flex justify-end">
-                     <div className="bg-lime-300 text-black p-3 rounded-lg max-w-[80%]"> {/* Lime background for User */}
+                 <div className="flex justify-end gap-3">
+                     <div className="bg-lime-300 text-sm text-black p-3 rounded-lg max-w-[80%]"> {/* Lime background for User */}
                          Tell me more about file organization.
                      </div>
+                     <Skeleton className="h-12 w-12 rounded-full" />
                  </div>
                   {/* Example AI Message Bubble 2 */}
                  <div className="flex justify-start">
-                     <div className="bg-gray-700 text-white p-3 rounded-lg max-w-[80%]"> {/* Darker gray background for AI */}
-                         The OS provides a structured way to organize and access files and directories, allowing users to store, retrieve, and manipulate their data effectively.
-                     </div>
+                 <div className="flex items-center space-x-4">
+      <Skeleton className="h-12 w-12 rounded-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-[250px]" />
+        <Skeleton className="h-4 w-[200px]" />
+      </div>
+    </div>
                  </div>
                  {/* Add more chat bubbles here */}
              </div>
@@ -91,6 +98,7 @@ export default function Home() {
                      <ArrowRight className="text-lime-300 w-6 h-6 cursor-pointer" /> {/* Send icon */}
                  </div>
              </div>
+             <BorderBeam/>
           </Card>
         </div>
       </div>
