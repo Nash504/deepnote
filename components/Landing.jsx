@@ -4,7 +4,7 @@ import { Card, CardTitle, CardHeader, CardDescription, CardContent, CardFooter }
 import { Button } from "./ui/button";
 
 import { Input } from "./ui/input";
-import { ArrowRight, Plus, Mic, Sparkles, FileText } from "lucide-react";
+import { ArrowRight, Plus, Mic, Sparkles, FileText, Link } from "lucide-react";
 
 import { useInView } from 'react-intersection-observer';
 
@@ -74,17 +74,21 @@ export default function Home() {
             Query your study materials with AI. Unlock rapid understanding and pinpoint key information within your notes and texts. Fast, focused learning.
           </p>
           
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-6">
-            <Button className="bg-lime-400 hover:bg-lime-300 text-black font-bold text-lg py-6 px-8 rounded-full transition-all duration-300 ease-in-out w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-lime-400/20">
-              Get Started
-              <ArrowRight size={18} />
-            </Button>
-            
-           
-          </div>
-          
-          {/* Social proof */}
+        
+                <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-6">
+               
+                <Button 
+                  onClick={() => window.location.href = "/work"}
+                  className="bg-lime-400 hover:bg-lime-300 text-black font-bold text-lg py-6 px-8 rounded-full transition-all duration-300 ease-in-out w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-lime-400/20"
+                >
+                  Get Started
+                  <ArrowRight size={18} />
+                </Button>
+              
+                 
+                </div>
+                
+                {/* Social proof */}
 
         </div>
 

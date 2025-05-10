@@ -9,6 +9,11 @@ import {
 import { Geist, Geist_Mono, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import Navbar from '../components/Navbar'
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

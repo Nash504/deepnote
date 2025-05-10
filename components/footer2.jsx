@@ -1,3 +1,4 @@
+'use client';
 import { Notebook } from "lucide-react";
 import { GitHubLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
@@ -31,7 +32,7 @@ const Footer2 = ({
           <h3 className="text-sm font-light mb-6 px-4 py-2 bg-gradient-to-r  text-white bg-clip-text ">
             {tagline}
           </h3>
-          <Button className="bg-lime-300 text-black font-bold text-lg py-4 px-6 rounded-full hover:bg-lime-400 transition duration-300 ease-in-out ">
+          <Button  onClick={() => window.location.href = "/work"}  className="bg-lime-300 text-black font-bold text-lg py-4 px-6 rounded-full hover:bg-lime-400 transition duration-300 ease-in-out ">
             Get Started
           </Button>
 
