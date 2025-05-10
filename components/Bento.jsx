@@ -2,7 +2,7 @@
 import { Card } from "./ui/card"; // Assuming Card is a simple wrapper or div
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
-import { ChevronRight, Zap, BarChart3, ArrowRight, Sparkles } from "lucide-react";
+import { ChevronRight, Zap, BarChart3, ArrowRight,Brain, Sparkles,Timer,Star,Scale } from "lucide-react";
 
 // Custom hook for counting animation (already well-abstracted)
 const useCountAnimation = (end, duration = 2000, delay = 0, isVisible) => {
@@ -141,10 +141,10 @@ export default function NeonBento() {
     };
 
     const metricsData = [
-        { label: "Study Time Saved", value: "68%", icon: "⏱️" },
-        { label: "Knowledge Retention", value: "2.4x", icon: "🧠" },
-        { label: "User Satisfaction", value: "4.9/5", icon: "⭐" },
-        { label: "Concept Mastery", value: "+87%", icon: "📈" }
+        { label: "Study Time Saved", value: "68%", icon: <Timer className="text-lime-400" size={24} /> },
+        { label: "Knowledge Retention", value: "2.4x", icon: <Brain className="text-lime-400" size={24} /> },
+        { label: "User Satisfaction", value: "4.9/5", icon: <Star className="text-lime-400" size={24} /> },
+        { label: "Concept Mastery", value: "+87%", icon: <Scale className="text-lime-400" size={24} /> },
     ];
 
     return (
@@ -165,11 +165,7 @@ export default function NeonBento() {
             <div className="max-w-6xl mx-auto relative">
                 {/* Heading section with advanced animations */}
                 <div className="relative z-10 mb-16 text-center">
-                    <AnimatedText isVisible={isVisible} delay={100} className="inline-flex items-center bg-black text-lime-300 rounded-full px-4 py-1 text-sm font-medium mb-6">
-                        <Sparkles size={14} className="mr-2" />
-                        <span>Interactive Knowledge Base</span>
-                    </AnimatedText>
-
+                   
                     <AnimatedText isVisible={isVisible} delay={200} className="text-4xl sm:text-6xl lg:text-7xl font-bold text-black mb-6 text-center">
                         <h1>
                             Navigate Your <span className="relative">
@@ -217,8 +213,8 @@ export default function NeonBento() {
                             </div>
 
                             <div className={`flex items-center mt-8 space-x-2 group/cta transition-all ${hoveredCard === 'feature' ? 'translate-x-2' : 'translate-x-0'}`}>
-                                <span className="font-bold text-black">Explore Feature</span>
-                                <ChevronRight size={20} className="text-black transition-transform group-hover/cta:translate-x-1" />
+                            
+                               
                             </div>
                         </div>
 
@@ -283,14 +279,10 @@ export default function NeonBento() {
                             <h3 className="text-2xl font-bold text-lime-300 mb-4">TRY INTERACTIVE DEMO</h3>
                             <p className="text-gray-400 mb-6">Experience how DeepNote transforms your learning process</p>
 
-                            <button
-                                className={`group relative flex items-center space-x-2 bg-lime-300/10 hover:bg-lime-300/20 border border-lime-300/50 text-lime-300 font-medium py-2 px-4 rounded-lg transition-all duration-300 overflow-hidden ${hoveredCard === 'demo' ? 'pl-6 pr-10' : ''}`}
-                            >
-                                <span>Launch Demo</span>
-                                <ArrowRight size={16} className={`transition-all duration-300 ${hoveredCard === 'demo' ? 'translate-x-1' : ''}`} />
+                          
+                             
 
-                                <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-lime-300 transition-all duration-500 group-hover:w-full"></span>
-                            </button>
+                             
                         </div>
 
                         {/* Radial gradient on hover */}
@@ -314,10 +306,7 @@ export default function NeonBento() {
                     >
                          {/* Content */}
                         <div className="relative p-8 h-full">
-                            <div className="flex items-center justify-between mb-8">
-                                <h3 className="font-bold text-white text-xl">PERFORMANCE METRICS</h3>
-                                <span className="text-xs font-medium bg-lime-300/20 text-lime-300 py-1 px-3 rounded-full">LIVE DATA</span>
-                            </div>
+                            
 
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                                 {metricsData.map((metric, i) => (
@@ -338,10 +327,7 @@ export default function NeonBento() {
 
                             <div className="flex items-center justify-between">
                                 <p className="text-gray-400">Based on data from 10,000+ students</p>
-                                <button className="text-lime-300 hover:text-lime-200 transition-colors font-medium flex items-center space-x-1">
-                                    <span>View Full Report</span>
-                                    <ChevronRight size={16} />
-                                </button>
+                               
                             </div>
                         </div>
 

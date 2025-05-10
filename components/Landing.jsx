@@ -151,7 +151,7 @@ export default function Home() {
                   <Plus className="text-lime-400 w-5 h-5 cursor-pointer hover:text-lime-300 transition-colors" />
                   <Input
                     className="flex-1 bg-transparent border-none focus:ring-0 focus-visible:ring-0 text-white placeholder-gray-500 px-3 py-1"
-                    placeholder="Ask anything about your PDF..."
+                    placeholder="Ask Johnathon..."
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                   />
@@ -176,21 +176,7 @@ export default function Home() {
       
       {/* Feature highlights section (condensed for visibility) */}
       <div className={`relative z-10 mt-24 max-w-6xl mx-auto transition-all duration-1000 ease-out ${mainInView ? 'opacity-100 translate-y-0 delay-500' : 'opacity-0 translate-y-10'}`}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { title: "Smart PDF Analysis", description: "Our AI reads and understands your documents instantly" },
-            { title: "Precise Answers", description: "Get exactly what you need without endless searching" },
-            { title: "Knowledge Retention", description: "Save insights and create custom study guides" }
-          ].map((feature, index) => (
-            <div key={index} className="bg-neutral-800/50 backdrop-blur-sm p-6 rounded-xl border border-white/5 hover:border-lime-400/30 transition-all duration-300 group">
-              <div className="h-10 w-10 rounded-full bg-lime-400/20 flex items-center justify-center mb-4 group-hover:bg-lime-400/30 transition-colors">
-                <Sparkles size={16} className="text-lime-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-              <p className="text-gray-400">{feature.description}</p>
-            </div>
-          ))}
-        </div>
+       
       </div>
     </div>
   );
