@@ -175,7 +175,7 @@ export default function NeonBento() {
                         </h1>
                     </AnimatedText>
 
-                    <AnimatedText isVisible={isVisible} delay={300} className="text-md sm:text-xl text-gray-700 max-w-3xl mx-auto mb-8 text-center">
+                    <AnimatedText isVisible={isVisible} delay={300} className="text-md sm:text-xl font-poppins text-gray-700 max-w-3xl mx-auto mb-8 font-poppins text-center">
                         <p>
                             DeepNote transforms your study resources into an interactive knowledge base,
                             
@@ -229,8 +229,8 @@ export default function NeonBento() {
                         setHoveredCard={setHoveredCard}
                         isVisible={isVisible}
                         variants={cardVariants}
-                        hoverClass="border-lime-300/50 scale-[0.99]" // Specific hover effect class for the wrapper
-                        className="bg-black border-2 border-lime-300/0 transition-all duration-500 scale-[0.97]" // Base styles
+                        hoverClass="border-lime-300/50 scale-[0.2]" // Specific hover effect class for the wrapper
+                        className="bg-black border-2  border-lime-300/0 transition-all duration-500 scale-[0.999]" // Base styles
                     >
                          {/* Content */}
                         <div className="relative p-8 flex flex-col justify-between h-full">
@@ -243,12 +243,12 @@ export default function NeonBento() {
 
                             <div className="space-y-6">
                                 <div>
-                                    <div className="text-5xl font-bold text-white mb-2">{userCount}<span className="text-lime-300">%</span></div>
+                                    <div className="text-5xl font-bold text-white mb-2">{userCount}<span className="text-lime-300 pl-2">%</span></div>
                                     <p className="text-gray-400">of users report improved study efficiency</p>
                                 </div>
 
                                 <div>
-                                    <div className="text-5xl font-bold text-white mb-2">{accuracy}<span className="text-lime-300">%</span></div>
+                                    <div className="text-5xl font-bold text-white mb-2">{accuracy}<span className="text-lime-300 pl-2">%</span></div>
                                     <p className="text-gray-400">accuracy in answer retrieval</p>
                                 </div>
                             </div>

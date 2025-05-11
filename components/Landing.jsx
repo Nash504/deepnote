@@ -53,7 +53,7 @@ export default function Home() {
     : 'opacity-0 translate-y-16';
 
   return (
-    <div className={`bg-gradient-to-b from-black to-neutral-900 text-white font-space-grotesk min-h-screen p-4 sm:p-8 overflow-hidden`}>
+    <div className={`bg-gradient-to-b from-black to-neutral-900 text-white font-space-grotesk  min-h-screen p-4 sm:p-8 overflow-hidden`}>
       {/* Background particles/grid effect */}
     
       
