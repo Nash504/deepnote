@@ -38,10 +38,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider afterSignInUrl='/work' afterSignUpUrl='/work'>
       <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.className} ${poppins.variable}`}>
         <body className="font-poppins antialiased bg-black">
-          <Navbar />
+        <Navbar />
           {children}
         </body>
       </html>

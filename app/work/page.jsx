@@ -1,86 +1,116 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
+import { useUser } from "@clerk/nextjs";
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ArrowUp } from 'lucide-react';
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+  DialogFooter
+} from "@/components/ui/dialog";
 
 
 
-export default function ChatPage() {
-    const [messages, setMessages] = useState([
-        { id: 1, text: "Welcome to the chat!", sender: "system" }
-    ]);
-    const [newMessage, setNewMessage] = useState("");
-    const messagesEndRef = useRef(null);
 
-    // Auto-scroll to bottom when messages update
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
 
-    const handleSendMessage = (e) => {
-        e.preventDefault();
-        if (newMessage.trim() === "") return;
-        
-        // Add user message
-        const userMsg = { id: messages.length + 1, text: newMessage, sender: "user" };
-        setMessages([...messages, userMsg]);
-        
-        // Simulate response (in a real app, this would be from an API)
-        setTimeout(() => {
-            const botMsg = { id: messages.length + 2, text: "Thanks for your message!", sender: "bot" };
-            setMessages(prev => [...prev, botMsg]);
-        }, 1000);
-        
-        setNewMessage("");
-    };
+export default function Page() {
+  const { isLoaded, isSignedIn, user } = useUser();
 
-    return (
-        <div className="min-h-screen bg-black flex flex-col">
-            {/* Header */}
-            <header className="bg-lime-300 p-4">
-                <h1 className="text-black font-bold text-2xl text-center">Chat App</h1>
-            </header>
-            
-            {/* Chat container */}
-            <div className="flex-1 p-4 overflow-y-auto max-w-3xl mx-auto w-full">
-                <div className="space-y-4 pb-20">
-                    {messages.map((msg) => (
-                        <div 
-                            key={msg.id} 
-                            className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                        >
-                            <div 
-                                className={`max-w-xs md:max-w-md p-3 rounded-lg ${
-                                    msg.sender === 'user' 
-                                        ? 'bg-lime-300 text-black rounded-br-none' 
-                                        : 'bg-white text-black rounded-bl-none'
-                                }`}
-                            >
-                                {msg.text}
-                            </div>
-                        </div>
-                    ))}
-                    <div ref={messagesEndRef} />
-                </div>
-            </div>
-            
-            {/* Message input */}
-            <div className="fixed bottom-0 w-full bg-black border-t border-lime-300 p-4">
-                <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto flex gap-2">
-                    <input
-                        type="text"
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type a message..."
-                        className="flex-1 p-2 bg-black text-white border border-lime-300 rounded-md focus:outline-none focus:ring-2 focus:ring-lime-300"
-                    />
-                    <button 
-                        type="submit"
-                        className="bg-lime-300 text-black px-4 py-2 rounded-md font-medium hover:bg-lime-400 transition-colors"
-                    >
-                        Send
-                    </button>
-                </form>
-            </div>
+  // 1. Create a reference to the hidden input
+  const fileInputRef = useRef(null);
+
+  // 2. Button click handler to trigger the hidden input
+  const handleButtonClick = () => {
+    fileInputRef.current?.click(); // Safe call to open file picker
+  };
+
+  // 3. When a file is chosen
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      console.log("Selected file:", file);
+      // Optional: do something with the file here
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-white flex flex-col">
+      {user?.firstName ? (
+        <h1 className="text-4xl font-bold p-8">Welcome {user.firstName}</h1>
+      ) : (
+        <h1 className="text-4xl font-bold p-8">Hello</h1>
+      )}
+
+      <div className="flex flex-col sm:flex-row justify-center items-center">
+        <Card className="p-8 m-4 border-2 border-black">
+          <CardContent>
+            <Card className="bg-white border-2 border-lime-300 border-dashed p-8">
+              
+              {/* 4. File Upload Button */}
+              <Button
+                onClick={handleButtonClick}
+                className="bg-lime-500 text-black hover:bg-lime-600 border-2 border-black transition-transform duration-200 hover:scale-105"
+              >
+                Create New Project
+                <ArrowUp />
+              </Button>
+
+              {/* 5. Hidden Input */}
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+                accept='application/pdf'
+              />
+            </Card>
+          </CardContent>
+        </Card>
+
+
+
+
+
+
+          <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Edit Profile</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit profile</DialogTitle>
+          <DialogDescription>
+            Make changes to your profile here. Click save when you're done.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input id="name" value="Pedro Duarte" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Username
+            </Label>
+            <Input id="username" value="@peduarte" className="col-span-3" />
+          </div>
         </div>
-    );
+        <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+      </div>
+    </div>
+  );
 }

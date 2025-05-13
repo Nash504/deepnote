@@ -9,6 +9,7 @@ import { ArrowRight, Plus, Mic, Sparkles, FileText, Link } from "lucide-react";
 import { useInView } from 'react-intersection-observer';
 
 import { useState, useEffect } from "react";
+import { SignInButton } from "@clerk/nextjs";
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -76,14 +77,17 @@ export default function Home() {
           
         
                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-6">
-               
-                <Button 
-                  onClick={() => window.location.href = "/work"}
-                  className="bg-lime-400 hover:bg-lime-300 text-black font-bold text-lg py-6 px-8 rounded-full transition-all duration-300 ease-in-out w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-lime-400/20"
-                >
-                  Get Started
-                  <ArrowRight size={18} />
-                </Button>
+             
+            <SignInButton afterSignInUrl="/work" mode="modal">
+  <Button 
+    className="bg-lime-400 hover:bg-lime-300 text-black font-bold text-lg py-6 px-8 rounded-full transition-all duration-300 ease-in-out w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-lime-400/20"
+  >
+    Get Started
+    <ArrowRight size={18} />
+  </Button>
+</SignInButton>
+
+             
               
                  
                 </div>
