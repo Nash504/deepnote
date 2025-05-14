@@ -5,6 +5,7 @@ import { useUser } from "@clerk/nextjs";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowUp, StickyNote } from 'lucide-react';
+import PdfCard from "@/components/PdfCard";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +17,10 @@ export default function Page() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedType, setSelectedType] = useState(null); // <-- NEW
+    const [pdfs, setPdfs] = useState([
+ 
+  ]);
+
 
   const fileInputRef = useRef(null);
 
@@ -31,6 +36,19 @@ export default function Page() {
     }
   };
 
+  const handleUpload = () => {
+    if (selectedFile && selectedType) {
+
+      // Reset the state
+      setSelectedFile(null);
+      setSelectedType(null);
+      setIsDialogOpen(false);
+
+      // Optionally, you can add the new PDF to the list
+      setPdfs((prevPdfs) => [...prevPdfs, { name: selectedFile.name, type: selectedType }]);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {user?.firstName ? (
@@ -39,13 +57,13 @@ export default function Page() {
         <h1 className="text-4xl font-bold p-8">Hello</h1>
       )}
 
-      <div className="flex flex-col sm:flex-row justify-center items-center">
-        <Card className="p-8 m-4 border-2 border-black">
-          <CardContent>
-            <Card className="bg-white border-2 border-lime-300 border-dashed p-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 p-4">
+        <Card className="border-2 border-black items-center justify-center">
+          <CardContent className="p-2">
+            <Card className="bg-white border-2 border-lime-300 border-dashed p-8  flex justify-center">
               <Button
                 onClick={handleButtonClick}
-                className="bg-lime-500 text-black hover:bg-lime-600 border-2 border-black transition-transform duration-200 hover:scale-105"
+                className="w-fit text-sm bg-lime-500 text-black hover:bg-lime-600 border-2 border-black transition-transform duration-200 hover:scale-105 flex items-center gap-2"
               >
                 Create New Path
                 <ArrowUp />
@@ -60,6 +78,15 @@ export default function Page() {
             </Card>
           </CardContent>
         </Card>
+      
+        {pdfs.map((pdf, index) => (
+          <PdfCard
+            key={index}
+            name={pdf.name}
+            type={pdf.type}
+          />
+        ))} 
+        
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-[425px]">
@@ -97,7 +124,7 @@ export default function Page() {
               </label>
             </div>
 
-            <Button>Upload</Button>
+            <Button onClick={handleUpload}>Upload</Button>
           </DialogContent>
         </Dialog>
       </div>
