@@ -12,7 +12,7 @@ export default function PdfCard({ name, type }) {
 
       <div className="flex flex-col items-end gap-2">
         <h1 className="font-semibold text-sm">{name}</h1>
-        <span className={`text-white w-fit border-2 border-black px-2 py-1 rounded-2xl  ${color}`}>{label}</span>
+        <span className={`text-white font-bold w-fit border-2 border-black px-2 py-1 rounded-2xl  ${color}`}>{label}</span>
       </div>
     </Card>
   

@@ -1,15 +1,17 @@
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState, useRef,useEffect } from 'react';
 import { useUser } from "@clerk/nextjs";
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowUp, StickyNote } from 'lucide-react';
+import { PlusCircle, StickyNote } from 'lucide-react';
 import PdfCard from "@/components/PdfCard";
 import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
+
+
 
 export default function Page() {
   const { isSignedIn, user } = useUser();
@@ -20,6 +22,24 @@ export default function Page() {
     const [pdfs, setPdfs] = useState([
  
   ]);
+
+
+
+  useEffect(() => {
+  const stored = localStorage.getItem("pdfList");
+  if (stored) setPdfs(JSON.parse(stored));
+}, []);
+
+useEffect(() => {
+  localStorage.setItem("pdfList", JSON.stringify(pdfs));
+}, [pdfs]);
+
+
+
+
+
+
+
 
 
   const fileInputRef = useRef(null);
@@ -66,7 +86,7 @@ export default function Page() {
                 className="w-fit text-sm bg-lime-500 text-black hover:bg-lime-600 border-2 border-black transition-transform duration-200 hover:scale-105 flex items-center gap-2"
               >
                 Create New Path
-                <ArrowUp />
+                <PlusCircle />
               </Button>
               <input
                 type="file"
