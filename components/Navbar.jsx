@@ -10,7 +10,7 @@ const Navbar = () => {
   const afterSignUpUrl = "/work"; // Replace with your onboarding or dashboard route
 
   return (
-    <header className="sticky top-0 z-50 bg-neutral-900/30 backdrop-blur-md border-b border-white/10 shadow-lg">
+    <header className="font-space-grotesk sticky top-0 z-50 bg-neutral-900 backdrop-blur-md border-b border-white/10 shadow-lg">
       <div className="container mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center space-x-2">

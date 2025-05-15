@@ -33,14 +33,7 @@ export default function Page() {
 useEffect(() => {
   localStorage.setItem("pdfList", JSON.stringify(pdfs));
 }, [pdfs]);
-
-
-
-
-
-
-
-
+  
 
   const fileInputRef = useRef(null);
 
@@ -56,6 +49,16 @@ useEffect(() => {
     }
   };
 
+const handleDelete = (name) => {
+  setPdfs(pdfs.filter((pdf)=>(pdf.name!==name)));
+  localStorage.setItem("pdfList", JSON.stringify(pdfs));
+  setIsDialogOpen(false);
+}
+
+
+
+
+
   const handleUpload = () => {
     if (selectedFile && selectedType) {
 
@@ -70,7 +73,7 @@ useEffect(() => {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col font-poppins">
       {user?.firstName ? (
         <h1 className="text-4xl font-bold p-8">Welcome {user.firstName}</h1>
       ) : (
@@ -104,6 +107,7 @@ useEffect(() => {
             key={index}
             name={pdf.name}
             type={pdf.type}
+            onDelete={()=>handleDelete(pdf.name)}
           />
         ))} 
         
