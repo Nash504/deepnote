@@ -56,21 +56,21 @@ export default function Page() {
 
   return (
     <div className="bg-white flex flex-col ">
-      <h1 className="text-4xl font-bold p-8">
+      <h1 className="text-4xl font-light p-8 font-space-grotesk ">
         {user?.firstName ? `Welcome ${user.firstName}` : "Hello"}
       </h1>
 
       <div className="gap-2 p-4 items-center w-full flex justify-center">
-      <Card className="border-2 border-black flex items-center justify-center w-full max-w-3xl shadow-lg bg-gradient-to-br from-white to-lime-50">
-  <CardContent className="p-6">
-    <Card className="bg-white border-2 border-lime-300 border-dashed p-12 flex justify-center w-full max-w-3xl relative overflow-hidden">
-      <div className="absolute inset-0 bg-lime-50 opacity-20 rounded-full blur-3xl transform translate-x-1/2"></div>
-      <Button
-        onClick={handleButtonClick}
-        className="w-fit text-sm p-6 bg-lime-500 text-black hover:bg-lime-600 border-2 border-black transition-all duration-200 hover:scale-105 hover:shadow-md flex items-center gap-2 font-light rounded-xl"
-      >
-        Create New Path
-        <PlusCircle className="animate-pulse" />
+        <Card className="border-2 border-black flex items-center justify-center w-full max-w-3xl shadow-lg bg-gradient-to-br from-white to-lime-50">
+          <CardContent className="p-6">
+            <Card className="bg-white border-2 border-lime-300 border-dashed p-12 flex justify-center w-full max-w-3xl relative overflow-hidden">
+              <div className="absolute inset-0 bg-lime-50 opacity-20 rounded-full blur-3xl transform translate-x-1/2"></div>
+              <Button
+                onClick={handleButtonClick}
+                className="w-fit text-sm p-6 bg-lime-500 text-black hover:bg-lime-600 border-2 border-black transition-all duration-200 hover:scale-105 hover:shadow-md flex items-center gap-2 font-light rounded-xl"
+              >
+                Create New Path
+                <PlusCircle className="animate-pulse" />
       </Button>
       <input
         type="file"

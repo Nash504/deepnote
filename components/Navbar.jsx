@@ -1,23 +1,42 @@
+"use client";
 import Link from 'next/link';
 import React from 'react';
+import { Menu } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 // Import Clerk components
 import { SignInButton, SignUpButton, UserButton, SignedIn, SignedOut } from '@clerk/nextjs';
 import { Notebook } from 'lucide-react';
-
+import { SheetTrigger,Sheet,SheetContent } from './ui/sheet';
 const Navbar = () => {
   // Define URLs for redirection after sign-in/sign-up
   const afterSignInUrl = "/work"; // Replace with your dashboard route
   const afterSignUpUrl = "/work"; // Replace with your onboarding or dashboard route
-
+  const pathname = usePathname();
   return (
-    <header className="font-space-grotesk sticky top-0 z-50 bg-neutral-900 backdrop-blur-md border-b border-white/10 shadow-lg">
+    <header className="font-light sticky top-0 z-50 bg-neutral-900 backdrop-blur-md border-b border-white/10 shadow-lg">
       <div className="container mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center space-x-2">
-          <Notebook className="h-5 w-5 sm:h-6 sm:w-6 text-lime-400" />
-          <Link href="/" className="text-lg sm:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-lime-300">
+
+       
+        {pathname === "/work" ? (
+  <Sheet>
+    <SheetTrigger>
+      <button className="text-white hover:text-lime-400 transition-colors text-sm sm:text-base">
+        <Menu className="h-5 w-5 sm:h-6 sm:w-6 text-lime-400" />
+      </button>
+    </SheetTrigger>
+    <SheetContent>
+      {/* Sheet content goes here */}
+    </SheetContent>
+  </Sheet>):  
+            (<><Notebook className="h-5 w-5 sm:h-6 sm:w-6 text-lime-400" />
+            <Link href="/" className="text-lg sm:text-xl  text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-lime-300">
             DeepNote
           </Link>
+          </>)
+}
+
         </div>
 
         {/* Center section - can be used for navigation links */}
