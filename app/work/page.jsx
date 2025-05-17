@@ -1,6 +1,4 @@
-// app/page.jsx
 "use client";
-
 
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
@@ -10,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle, StickyNote } from "lucide-react";
 import PdfCard from "@/components/PdfCard";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-
+import UppyUploader from "@/components/UppyUploader";// your uploader component
 export default function Page() {
   const { isSignedIn, user } = useUser();
   const [pdfs, setPdfs] = useState([]);
@@ -55,7 +53,7 @@ export default function Page() {
   };
 
   return (
-    <div className="bg-white flex flex-col ">
+    <div className="bg-white flex flex-col">
       <h1 className="text-4xl font-light p-8 font-space-grotesk ">
         {user?.firstName ? `Welcome ${user.firstName}` : "Hello"}
       </h1>
@@ -71,85 +69,87 @@ export default function Page() {
               >
                 Create New Path
                 <PlusCircle className="animate-pulse" />
-      </Button>
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        className="hidden"
-        accept="application/pdf"
-      />
-    </Card>
-  </CardContent>
-</Card>
+              </Button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+                accept="application/pdf"
+              />
+            </Card>
+          </CardContent>
+        </Card>
       </div>
-     
+
+      {/* Here is where you add Uppy uploader safely outside any buttons */}
+     <div className="max-w-xl border-2 border-lime-300 bg-black ">
+  <UppyUploader bucketName="pdfs" />
+</div>
       <div className="grid grid-cols-1 sm:grid-cols-3 p-4 justify-center gap-4">
         {pdfs.map((pdf, index) => (
-            <motion.div
-    key={index}
-    initial={{ opacity: 0, y: 30 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: index * 0.2 }}
-  >
-          <PdfCard
-            key={ index}
-            name={pdf.name}
-            type={pdf.type}
-            onDelete={() => handleDelete(pdf.name)}
-          /></motion.div>
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.2 }}
+          >
+            <PdfCard
+              key={index}
+              name={pdf.name}
+              type={pdf.type}
+              onDelete={() => handleDelete(pdf.name)}
+            />
+          </motion.div>
         ))}
       </div>
-      
 
-     
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ duration: 0.3 }}
-      >
-        <DialogContent className="sm:max-w-[425px] space-y-4">
-          <Card className="bg-lime-300 p-8 border-2 border-black">
-            <div className="flex justify-center items-center flex-col">
-              <StickyNote className="w-16 h-16 mb-2" />
-              <h1 className="text-lg font-semibold">
-                {selectedFile?.name ?? "No file selected"}
-              </h1>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.3 }}
+        >
+          <DialogContent className="sm:max-w-[425px] space-y-4">
+            <Card className="bg-lime-300 p-8 border-2 border-black">
+              <div className="flex justify-center items-center flex-col">
+                <StickyNote className="w-16 h-16 mb-2" />
+                <h1 className="text-lg font-semibold">
+                  {selectedFile?.name ?? "No file selected"}
+                </h1>
+              </div>
+            </Card>
+
+            <div className="flex flex-col space-y-2">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="docType"
+                  value="qp"
+                  checked={selectedType === "qp"}
+                  onChange={() => setSelectedType("qp")}
+                  className="accent-lime-600"
+                />
+                <span>Question Paper</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="docType"
+                  value="notes"
+                  checked={selectedType === "notes"}
+                  onChange={() => setSelectedType("notes")}
+                  className="accent-lime-600"
+                />
+                <span>Notes</span>
+              </label>
             </div>
-          </Card>
 
-          <div className="flex flex-col space-y-2">
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="docType"
-                value="qp"
-                checked={selectedType === "qp"}
-                onChange={() => setSelectedType("qp")}
-                className="accent-lime-600"
-              />
-              <span>Question Paper</span>
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="docType"
-                value="notes"
-                checked={selectedType === "notes"}
-                onChange={() => setSelectedType("notes")}
-                className="accent-lime-600"
-              />
-              <span>Notes</span>
-            </label>
-          </div>
-
-          <Button onClick={handleUpload}>Upload</Button>
-        </DialogContent>
-          </motion.div>
+            <Button onClick={handleUpload}>Upload</Button>
+          </DialogContent>
+        </motion.div>
       </Dialog>
-    
     </div>
   );
 }
