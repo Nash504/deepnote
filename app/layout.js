@@ -40,8 +40,7 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider afterSignInUrl='/work' afterSignUpUrl='/work'>
       <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${poppins.className}`}>
-        <body>
-        {/* <Navbar /> */}
+        <body> 
           {children}
         </body>
       </html>

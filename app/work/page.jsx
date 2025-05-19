@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle, StickyNote } from "lucide-react";
 import PdfCard from "@/components/PdfCard";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import SupabaseUploader from "@/components/SupabaseUploader";// your uploader component
+import SupabaseUploader from "@/components/SupabaseUploader";
+import { useUppyWithSupabase } from "@/components/UppyUploader";// your uploader component
 export default function Page() {
   const { isSignedIn, user } = useUser();
   const [pdfs, setPdfs] = useState([]);
@@ -83,9 +84,12 @@ export default function Page() {
       </div> */}
 
       {/* Here is where you add Uppy uploader safely outside any buttons */}
-     <div className="max-h-max max-w-full border-2 border-lime-300 border-dashed p-12 flex justify-center relative overflow-hidden mx-auto rounded-4xl">
+     <div className="max-h-max max-w-full p-12 flex justify-center relative overflow-hidden mx-auto rounded-4xl">
   <SupabaseUploader />
 </div>
+
+
+
 
       <div className="grid grid-cols-1 sm:grid-cols-3 p-4 justify-center gap-4">
         {pdfs.map((pdf, index) => (

@@ -39,7 +39,7 @@ export default function RootLayout({ children }) {
           <SidebarProvider>
             <AppSidebar />
             <div className="flex flex-col flex-1 min-h-screen">
-                 <Navbar/>
+                 {/* <Navbar/> */}
               <main className="p-4 flex-1">
              
                 {children}</main>

@@ -1,4 +1,5 @@
 'use client'
+
 import { useEffect, useState } from 'react'
 import Uppy from '@uppy/core'
 import { Dashboard } from '@uppy/react'
@@ -11,38 +12,35 @@ export default function SupabaseUploader() {
 
   useEffect(() => {
     const instance = new Uppy({
-      autoProceed: true,
-      restrictions: {
-        maxNumberOfFiles: 1
-      }
+      restrictions: { maxNumberOfFiles: 5 }, // multiple files
     })
 
-    instance.on('file-added', async (file) => {
-      const { data, error } = await supabase.storage
-        .from('notes') // change this
-        .upload(`uploads/${file.name}`, file.data, {
-          cacheControl: '3600',
-          upsert: true
-        })
+    instance.on('complete', async (result) => {
+      for (const file of result.successful) {
+        const { data, error } = await supabase.storage
+          .from('notes')
+          .upload(`uploads/${file.name}`, file.data, {
+            cacheControl: '3600',
+            upsert: true,
+          })
 
-      if (error) {
-        console.error('Upload error:', error.message)
-      } else {
-        console.log('Uploaded file:', data)
+        if (error) {
+          console.error(`Failed to upload ${file.name}:`, error.message)
+        } else {
+          console.log(`Uploaded ${file.name}:`, data)
+        }
       }
     })
 
     setUppy(instance)
-
     return () => instance.close()
   }, [])
 
   if (!uppy) return <p>Loading uploader...</p>
 
-return (
-  <div style={{ zIndex: 9999, position: 'relative' }}>
-    <Dashboard uppy={uppy} />
-  </div>
-)
-
+  return (
+    <div className="rounded-md border bg-background">
+      <Dashboard uppy={uppy} theme="dark" width={600} height={400} />
+    </div>
+  )
 }
