@@ -6,7 +6,8 @@ import { usePathname } from 'next/navigation';
 // Import Clerk components
 import { SignInButton, SignUpButton, UserButton, SignedIn, SignedOut } from '@clerk/nextjs';
 import { Notebook } from 'lucide-react';
-import { SheetTrigger,Sheet,SheetContent } from './ui/sheet';
+
+
 const Navbar = () => {
   // Define URLs for redirection after sign-in/sign-up
   const afterSignInUrl = "/work"; // Replace with your dashboard route
@@ -19,7 +20,7 @@ const Navbar = () => {
         <div className="flex items-center space-x-2">
 
        
-    {pathname === "/work" ? (
+    {/* {pathname === "/work" ? (
   <Sheet>
     <SheetTrigger>
       <Menu className="h-5 w-5 sm:h-6 sm:w-6 text-lime-400 cursor-pointer" />
@@ -38,7 +39,7 @@ const Navbar = () => {
       DeepNote
     </Link>
   </>
-)}
+)} */}
 
 
         </div>

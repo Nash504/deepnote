@@ -1,14 +1,9 @@
-import {
-  ClerkProvider,
-} from '@clerk/nextjs'
+import { ClerkProvider } from '@clerk/nextjs'
 import { Geist, Geist_Mono, Space_Grotesk, Poppins } from 'next/font/google'
-import './globals.css'
-import Navbar from '../components/Navbar'
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
+import '../globals.css'
+import { SidebarProvider } from "@/components/ui/sidebar"
+import  AppSidebar from "@/components/app-sidebar"
+import Navbar from '@/components/Navbar'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -40,9 +35,16 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider afterSignInUrl='/work' afterSignUpUrl='/work'>
       <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${poppins.className}`}>
-        <body>
-        {/* <Navbar /> */}
-          {children}
+        <body className="flex">
+          <SidebarProvider>
+            <AppSidebar />
+            <div className="flex flex-col flex-1 min-h-screen">
+                 <Navbar/>
+              <main className="p-4 flex-1">
+             
+                {children}</main>
+            </div>
+          </SidebarProvider>
         </body>
       </html>
     </ClerkProvider>

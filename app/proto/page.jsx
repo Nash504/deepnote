@@ -1,5 +1,9 @@
 "use client";
 
+
+
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
@@ -8,7 +12,9 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle, StickyNote } from "lucide-react";
 import PdfCard from "@/components/PdfCard";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import SupabaseUploader from "@/components/SupabaseUploader";// your uploader component
+import UppyUploader from "@/components/UppyUploader";
+
+
 export default function Page() {
   const { isSignedIn, user } = useUser();
   const [pdfs, setPdfs] = useState([]);
@@ -58,7 +64,7 @@ export default function Page() {
         {user?.firstName ? `Welcome ${user.firstName}` : "Hello"}
       </h1>
 
-      {/* <div className="gap-2 p-4 items-center w-full flex justify-center">
+      <div className="gap-2 p-4 items-center w-full flex justify-center">
         <Card className="border-2 border-black flex items-center justify-center w-full max-w-3xl shadow-lg bg-gradient-to-br from-white to-lime-50">
           <CardContent className="p-6">
             <Card className="bg-white border-2 border-lime-300 border-dashed p-12 flex justify-center w-full max-w-3xl relative overflow-hidden">
@@ -80,12 +86,12 @@ export default function Page() {
             </Card>
           </CardContent>
         </Card>
-      </div> */}
+      </div>
 
       {/* Here is where you add Uppy uploader safely outside any buttons */}
-     <div className="max-h-max max-w-full border-2 border-lime-300 border-dashed p-12 flex justify-center relative overflow-hidden mx-auto rounded-4xl">
-  <SupabaseUploader />
-</div>
+     {/* <div className=" max-w-full border-2 border-lime-300 border-dashed p-12 flex justify-center relative overflow-hidden mx-auto rounded-4xl">
+  <UppyUploader className="h-10" bucketName="notes" />
+</div> */}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 p-4 justify-center gap-4">
         {pdfs.map((pdf, index) => (

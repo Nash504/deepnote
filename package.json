@@ -20,8 +20,8 @@
     "@radix-ui/react-switch": "^1.2.4",
     "@radix-ui/react-tooltip": "^1.2.6",
     "@supabase/supabase-js": "^2.49.4",
-    "@uppy/core": "^4.4.4",
-    "@uppy/dashboard": "^4.3.3",
+    "@uppy/core": "^4.4.5",
+    "@uppy/dashboard": "^4.3.4",
     "@uppy/drag-drop": "^4.1.2",
     "@uppy/file-input": "^4.1.2",
     "@uppy/progress-bar": "^4.2.1",
@@ -37,7 +37,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-intersection-observer": "^9.16.0",
-    "tailwind-merge": "^3.2.0"
+    "tailwind-merge": "^3.2.0",
+    "tus-js-client": "^4.3.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
