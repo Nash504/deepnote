@@ -41,6 +41,7 @@ export default function RootLayout({ children }) {
     <ClerkProvider afterSignInUrl='/work' afterSignUpUrl='/work'>
       <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${poppins.className}`}>
         <body> 
+          <Navbar />
           {children}
         </body>
       </html>

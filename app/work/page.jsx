@@ -1,87 +1,105 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import PdfCard from "@/components/PdfCard";
-import { RadioGroup,RadioGroupItem } from "@/components/ui/radio-group";
+import FileViewer from "@/components/FileViewer";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import SupabaseUploader from "@/components/SupabaseUploader";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
 
 export default function Page() {
   const { isSignedIn, user } = useUser();
   const [pdfs, setPdfs] = useState([]);
+  const [type, setType] = useState("question-papers");
 
-  const [type, setType] = useState('question-papers');
+
+  // Animation variants for container elements
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
 
 
- 
-
- 
   return (
-    <div className="bg-white flex flex-col">
-      <h1 className="text-4xl font-light p-8 font-space-grotesk ">
-        {user?.firstName ? `Welcome ${user.firstName}` : "Hello"}
-      </h1>
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+      {/* Header section with welcome message */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative overflow-hidden py-8 px-4 sm:px-8 border-b border-gray-100"
+      >
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-4xl font-light font-space-grotesk bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            {user?.firstName ? `Welcome, ${user.firstName}` : "Hello Scholar"}
+          </h1>
+          <p className="mt-2 text-gray-500">
+            Your knowledge repository for academic excellence
+          </p>
+        </div>
+        <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-blue-50 rounded-full opacity-20" />
+      </motion.div>
 
-     
+      {/* Upload section */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="max-w-4xl mx-auto p-6 sm:p-8 mt-4 sm:mt-8 bg-white shadow-2xl rounded-xl"
+      >
+        <h2 className="font-medium text-xl mb-4 text-gray-800">Upload Documents</h2>
+        
+        <div className="flex flex-col gap-4">
+          <RadioGroup defaultValue="question-papers" className="flex flex-row gap-6 flex-wrap">
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="question-papers"
+                id="question-papers"
+                onClick={() => setType("question-papers")}
+              />
+              <label htmlFor="question-papers" className="cursor-pointer">Question Papers</label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="notes"
+                id="notes"
+                onClick={() => setType("notes")}
+              />
+              <label htmlFor="notes" className="cursor-pointer">Notes</label>
+            </div>
+          </RadioGroup>
 
-      {/* Here is where you add Uppy uploader safely outside any buttons */}
-     
-  <div className="max-h-max max-w-full p-12 flex justify-center relative overflow-hidden mx-auto rounded-4xl">
-   <div>
-     <RadioGroup>
-      <div className="flex flex-row gap-4">
-        <RadioGroupItem
-          value="question-papers"
-          id="question-papers"
-          onClick={() => setType("question-papers")}
-        />
-        <label htmlFor="question-papers">Question Papers</label>
-      </div>
-      <div className="flex flex-row gap-4">
-        <RadioGroupItem
-          value="notes"
-          id="notes"
-          onClick={() => setType("notes")}
-        />
-        <label htmlFor="notes">Notes</label>
-      </div>
-     </RadioGroup>
+          <SupabaseUploader type={type} className="w-full" />
+        </div>
+      </motion.div>
 
-  <SupabaseUploader type={type} />
-</div>
+    
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+        >
+         
+        </motion.div>
 
-
-
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 p-4 justify-center gap-4">
-        {pdfs.map((pdf, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.2 }}
+        {pdfs.length === 0 && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-center py-16"
           >
-            <PdfCard
-              key={index}
-              name={pdf.name}
-              type={pdf.type}
-              onDelete={() => handleDelete(pdf.name)}
-            />
+            <p className="text-gray-500">No documents yet. Upload your first one!</p>
           </motion.div>
-        ))}
+        )}
+        <FileViewer />
       </div>
-
-      
-    </div>
-  </div>
+   
   );
 }
