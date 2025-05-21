@@ -13,7 +13,7 @@ import { Plus } from "lucide-react";
 
 export default function Page() {
   const { user } = useUser();
-  const [type, setType] = useState("notes");
+  const [type, setType] = useState("question-papers");
   const [upload, setUpload] = useState(false);
   return (
     <SidebarProvider>
@@ -92,6 +92,7 @@ export default function Page() {
                   <RadioGroupItem
                     value="notes"
                     id="notes"
+                  
                     onClick={() => setType("notes")}
                   />
                   <label htmlFor="notes" className="cursor-pointer">
