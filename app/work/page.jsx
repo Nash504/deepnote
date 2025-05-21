@@ -19,12 +19,13 @@ export default function Page() {
     <SidebarProvider>
       {/* Sidebar (fixed width) */}
       <div className="flex">
-        <div className="fixed h-screen w-64 z-10">
-          <AppSidebar />
+        <div className="fixed hidden sm:block h-screen w-64 z-10">
+          
+          <AppSidebar  />
         </div>
 
         {/* Main content with left margin to accommodate sidebar */}
-        <div className="ml-64 flex-1 bg-gradient-to-b from-white to-gray-50 min-h-screen overflow-auto px-6 sm:px-10 py-8">
+        <div className="sm:ml-64 flex-1 bg-gradient-to-b from-white to-gray-50 min-h-screen overflow-auto px-6 sm:px-10 py-8">
          <div className="flex flex-row justify-between ">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -55,7 +56,7 @@ export default function Page() {
           </motion.div>
           <div>
             <Button onClick={() => setUpload(true)}><Plus /> Upload PDFs</Button>
-            {upload && <p>Upload is active</p>}
+          
           </div>
         </div>
 
