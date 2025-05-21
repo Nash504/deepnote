@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 
-export default function PdfCard({ name, type, onDelete }) {
+export default function PdfCard({ name, type }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
@@ -16,7 +16,7 @@ export default function PdfCard({ name, type, onDelete }) {
   const badgeColor = type === "notes" ? "bg-lime-500" : "bg-black";
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center ">
       {/* Main View Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <AnimatePresence>

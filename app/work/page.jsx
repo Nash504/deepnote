@@ -1,105 +1,116 @@
 "use client";
-
+import AppSidebar from "@/components/app-sidebar";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import FileViewer from "@/components/FileViewer";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import SupabaseUploader from "@/components/SupabaseUploader";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export default function Page() {
-  const { isSignedIn, user } = useUser();
-  const [pdfs, setPdfs] = useState([]);
-  const [type, setType] = useState("question-papers");
-
-
-  // Animation variants for container elements
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-
+  const { user } = useUser();
+  const [type, setType] = useState("notes");
+  const [upload, setUpload] = useState(false);
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-      {/* Header section with welcome message */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative overflow-hidden py-8 px-4 sm:px-8 border-b border-gray-100"
-      >
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl font-light font-space-grotesk bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            {user?.firstName ? `Welcome, ${user.firstName}` : "Hello Scholar"}
-          </h1>
-          <p className="mt-2 text-gray-500">
-            Your knowledge repository for academic excellence
-          </p>
+    <SidebarProvider>
+      {/* Sidebar (fixed width) */}
+      <div className="flex">
+        <div className="fixed h-screen w-64 z-10">
+          <AppSidebar />
         </div>
-        <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-blue-50 rounded-full opacity-20" />
-      </motion.div>
 
-      {/* Upload section */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className="max-w-4xl mx-auto p-6 sm:p-8 mt-4 sm:mt-8 bg-white shadow-2xl rounded-xl"
-      >
-        <h2 className="font-medium text-xl mb-4 text-gray-800">Upload Documents</h2>
-        
-        <div className="flex flex-col gap-4">
-          <RadioGroup defaultValue="question-papers" className="flex flex-row gap-6 flex-wrap">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem
-                value="question-papers"
-                id="question-papers"
-                onClick={() => setType("question-papers")}
-              />
-              <label htmlFor="question-papers" className="cursor-pointer">Question Papers</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem
-                value="notes"
-                id="notes"
-                onClick={() => setType("notes")}
-              />
-              <label htmlFor="notes" className="cursor-pointer">Notes</label>
-            </div>
-          </RadioGroup>
-
-          <SupabaseUploader type={type} className="w-full" />
-        </div>
-      </motion.div>
-
-    
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
-        >
-         
-        </motion.div>
-
-        {pdfs.length === 0 && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-center py-16"
+        {/* Main content with left margin to accommodate sidebar */}
+        <div className="ml-64 flex-1 bg-gradient-to-b from-white to-gray-50 min-h-screen overflow-auto px-6 sm:px-10 py-8">
+         <div className="flex flex-row justify-between ">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="relative border-b pb-6"
           >
-            <p className="text-gray-500">No documents yet. Upload your first one!</p>
+            <h1 className="text-4xl font-light font-space-grotesk bg-black bg-clip-text text-transparent">
+              {user?.firstName ? `Welcome, ${user.firstName}` : "Hello Scholar"}
+            </h1>
+            <p className="mt-2 text-gray-500">
+              Manage your notes and question papers
+            </p>
+
+            {/* Toggle Group */}
+            <ToggleGroup type="single" className="mt-6 flex gap-4">
+              <ToggleGroupItem value="all">
+                <p>All PDFs</p>
+              </ToggleGroupItem>
+              <ToggleGroupItem value="notes">
+                <p>Notes</p>
+              </ToggleGroupItem>
+              <ToggleGroupItem value="question-papers">
+                <p>Question Papers</p>
+              </ToggleGroupItem>
+            </ToggleGroup>
+
           </motion.div>
-        )}
-        <FileViewer />
+          <div>
+            <Button onClick={() => setUpload(true)}><Plus /> Upload PDFs</Button>
+            {upload && <p>Upload is active</p>}
+          </div>
+        </div>
+
+       {upload ? (
+         <motion.div
+           initial={{ opacity: 0, y: 20 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ delay: 0.3, duration: 0.5 }}
+           className="mt-10 max-w-4xl p-6 rounded-xl border border-black border-dashed bg-white shadow justify-between"
+         >
+           <h2 className="font-medium text-xl mb-4 text-gray-800">
+             Upload Documents
+           </h2>
+
+            <div className="flex flex-col gap-4">
+              <SupabaseUploader type={type} className="w-full" />
+
+              <RadioGroup
+                defaultValue="question-papers"
+                className="flex flex-row gap-6 flex-wrap"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="question-papers"
+                    id="question-papers"
+                    onClick={() => setType("question-papers")}
+                  />
+                  <label htmlFor="question-papers" className="cursor-pointer">
+                    Question Papers
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="notes"
+                    id="notes"
+                    onClick={() => setType("notes")}
+                  />
+                  <label htmlFor="notes" className="cursor-pointer">
+                    Notes
+                  </label>
+                     
+                </div>
+              </RadioGroup>
+
+               <Button onClick={() => setUpload(false)} variant="outline" className="border-black border-2">Cancel</Button>
+            </div>
+        
+          </motion.div>) : null}
+
+          {/* File Viewer */}
+          <div className="mt-10">
+            <FileViewer type={type} />
+          </div>
+        </div>
       </div>
-   
+    </SidebarProvider>
   );
 }
