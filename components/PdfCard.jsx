@@ -1,107 +1,44 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
+import { StickyNote, Eye, Download } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-import { Card } from "@/components/ui/card";
-import { StickyNote } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useState } from "react";
-import { Button } from "./ui/button";
-import Link from "next/link";
-
-export default function PdfCard({ name, type }) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-  const typeLabel = type === "notes" ? "Notes" : "Question Paper";
-  const badgeColor = type === "notes" ? "bg-lime-500" : "bg-black";
+export default function PdfCard({ name, type,createdAt }) {
+  const typeLabel = type == "notes" ? "notes" : "question papers";
+  const badgeColor = type === "notes" ? "bg-gray-100" : "bg-gray-100";
 
   return (
-    <div className="flex flex-col items-center ">
-      {/* Main View Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <AnimatePresence>
-          {isDialogOpen && (
-            <motion.div
-              key="dialog"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.25 }}
-            >
-              <DialogContent className="sm:max-w-[425px] space-y-4">
-                <Card className="bg-lime-300 p-8 border-2 border-black">
-                  <div className="flex flex-col justify-center items-center ">
-                    <StickyNote className="w-16 h-16 mb-2" />
-                    <h1 className="text-md font-semibold">
-                      {name ?? "No file selected"}
-                    </h1>
-                  </div>
-                </Card>
-                <div className="flex flex-col sm:flex-row gap-2 justify-end">
-                  <Button
-                    className="border-2 border-black"
-                    variant="destructive"
-                    onClick={() => setIsDeleteOpen(true)}
-                  >
-                    Delete
-                  </Button>
-                  {type === "notes" ? (
-                    <>
-                      <Button>View FlashCards</Button>
-                      <Link href="/work/chat">
-                        <Button>Chat with PDF</Button>
-                      </Link>
-                    </>
-                  ) : (
-                    <>
-                      <Button>View Questions</Button>
-                      <Button>View Answers</Button>
-                    </>
-                  )}
-                </div>
-              </DialogContent>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </Dialog>
+    <div className="flex flex-col items-center">
+      <Card className="w-80 h-96 border-2 border-gray-200 shadow-md rounded-xl flex flex-col">
+        {/* Top Tag and Menu */}
+        <CardHeader className="flex justify-between items-center">
+          <span
+            className={`text-sm px-3 py-1 rounded-fulls rounded-2xl font-medium border border-gray-300 ${badgeColor}`}
+          >
+            {typeLabel}
+          </span>
+          <div className="text-gray-500 text-xl font-bold">⋮</div>
+        </CardHeader>
 
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <DialogContent className="sm:max-w-[425px] space-y-4">
-          <h1 className="text-lg font-semibold">Delete "{name}"?</h1>
-          <div className="flex gap-2 justify-end">
-            <Button
-              className="border-2 border-black"
-              variant="destructive"
-              onClick={() => {
-                onDelete();
-                setIsDeleteOpen(false);
-                setIsDialogOpen(false);
-              }}
-            >
-              Confirm
-            </Button>
-            <Button onClick={() => setIsDeleteOpen(false)}>Cancel</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+        {/* Icon area */}
+        <div className="flex justify-center items-center bg-neutral-200 mx-4 rounded-xl py-8 mt-2">
+          <StickyNote className="w-12 h-12" />
+        </div>
 
-      {/* Card Preview */}
-      <Card
-        onClick={() => setIsDialogOpen(true)}
-        className="p-4 border-2 border-black duration-100 ease-in-out shadow-lg backdrop-blur-sm rounded-lg cursor-pointer w-90 h-64 flex flex-col"
-      >
-        <div className="flex-1 flex flex-col justify-between">
-          <div className="mb-20"></div>
-          <hr className="border-black w-full my-2" />
-          <div className="flex flex-col gap-2 items-end">
-            <h1 className="font-semibold text-lg">{name}</h1>
-            <span
-              className={`text-white font-bold w-fit border-2 border-black px-4 py-1 rounded-2xl ${badgeColor}`}
-            >
-              {typeLabel}
-            </span>
-          </div>
+        {/* Title and Date */}
+        <CardContent className="text-center mt-4">
+          <h1 className="font-bold text-xl">{name ?? "Untitled"}</h1>
+          <p className="text-blue-600 text-sm mt-1">Uploaded on {createdAt?.split("T")[0]}  </p>
+        </CardContent>
+
+        {/* View/Download Buttons */}
+        <div className="flex justify-around mt-auto mb-4 px-4">
+          <Button variant="ghost" className="flex gap-2 text-black">
+            <Eye size={18} /> View
+          </Button>
+          <Button variant="ghost" className="flex gap-2 text-black">
+            <Download size={18} /> Download
+          </Button>
         </div>
       </Card>
     </div>

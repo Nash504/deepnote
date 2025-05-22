@@ -40,6 +40,7 @@ const FileViewer = () => {
               <PdfCard
                 name={pdf.name}
                 type={"question-papers"}
+                createdAt={pdf.created_at}
               />
             </motion.div>
           ))}
@@ -60,6 +61,7 @@ const FileViewer = () => {
               <PdfCard
                 name={pdf.name}
                 type={"notes"}
+                createdAt={pdf.created_at}
               />
             </motion.div>
           ))}
