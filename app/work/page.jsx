@@ -15,7 +15,7 @@ export default function Page() {
   const { user } = useUser();
   const [type, setType] = useState("question-papers");
   const [upload, setUpload] = useState(false);
-  
+ 
   return (
     <SidebarProvider>
       <div className="flex">
@@ -137,7 +137,7 @@ export default function Page() {
 
           {/* File Viewer Section */}
           <div className="mt-10 ">
-            <FileViewer type={type} />
+            <FileViewer category={type} />
           </div>
         </div>
       </div>
