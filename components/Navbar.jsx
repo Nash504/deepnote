@@ -19,27 +19,7 @@ const Navbar = () => {
         {/* Logo */}
         <div className="flex items-center space-x-2">
 
-       
-    {/* {pathname === "/work" ? (
-  <Sheet>
-    <SheetTrigger>
-      <Menu className="h-5 w-5 sm:h-6 sm:w-6 text-lime-400 cursor-pointer" />
-    </SheetTrigger>
-    <SheetContent className="bg-black text-white ">
-
-    </SheetContent>
-  </Sheet>
-) : (
-  <>
-    <Notebook className="h-5 w-5 sm:h-6 sm:w-6 text-lime-400" />
-    <Link
-      href="/"
-      className="text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-lime-300"
-    >
-      DeepNote
-    </Link>
-  </>
-)} */}
+ 
 
 
         </div>

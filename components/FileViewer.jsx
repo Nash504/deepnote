@@ -24,51 +24,39 @@ const FileViewer = () => {
     fetchFiles()
   }, [])
 
-  return (
-    <div className="space-y-12 px-4 py-8"> 
-      <div>
-        <h2 className="text-2xl font-bold mb-6 border-b-2 border-black pb-2">Question Papers</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {questionPapers.map((pdf, index) => (
-            <motion.div
-              key={pdf.name + index}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex justify-center"
-            >
-              <PdfCard
-                name={pdf.name}
-                type={"question-papers"}
-                createdAt={pdf.created_at}
-              />
-            </motion.div>
-          ))}
-        </div>
-      </div>
+// Combine and alternate notes and question papers
+const maxLength = Math.max(notes.length, questionPapers.length);
+const mixedItems = [];
 
-      <div>
-        <h2 className="text-2xl font-bold mb-6 border-b-2 border-black pb-2">Notes</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {notes.map((pdf, index) => (
-            <motion.div
-              key={pdf.name + index}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex justify-center"
-            >
-              <PdfCard
-                name={pdf.name}
-                type={"notes"}
-                createdAt={pdf.created_at}
-              />
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
+for (let i = 0; i < maxLength; i++) {
+  if (notes[i]) {
+    mixedItems.push({ ...notes[i], type: "notes" });
+  }
+  if (questionPapers[i]) {
+    mixedItems.push({ ...questionPapers[i], type: "question-papers" });
+  }
+}
+
+return (
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-20 px-4 py-8 ">
+    {mixedItems.map((pdf, index) => (
+      <motion.div
+        key={pdf.name + index}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.1 }}
+        className="flex justify-center "
+      >
+        <PdfCard 
+          name={pdf.name}
+          type={pdf.type}
+          createdAt={pdf.created_at}
+        />
+      </motion.div>
+    ))}
+  </div>
+);
+
 }
 
 export default FileViewer
