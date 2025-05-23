@@ -1,13 +1,30 @@
 "use client";
-import { StickyNote, Eye, Download,EllipsisVertical } from "lucide-react";
+import { StickyNote, Eye, Download, EllipsisVertical } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useState } from "react";
 
-
-export default function PdfCard({ name, type,createdAt }) {
+export default function PdfCard({ name, type, createdAt }) {
   const typeLabel = type == "notes" ? "notes" : "question papers";
   const badgeColor = type === "notes" ? "bg-gray-100" : "bg-gray-100";
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const handleDelete = () => {
+    // Add your delete logic here
+    console.log("Deleting item:", name);
+    setDialogOpen(false);
+    setDropdownOpen(false); // Close dropdown after delete
+  };
+
+  const handleDeleteClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDialogOpen(true);
+    setDropdownOpen(false); // Close dropdown when opening dialog
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -15,27 +32,51 @@ export default function PdfCard({ name, type,createdAt }) {
         {/* Top Tag and Menu */}
         <CardHeader className="flex justify-between items-center">
           <span
-            className={`text-sm px-3 py-1 rounded-fulls rounded-2xl font-medium border border-gray-300 ${badgeColor}`}
+            className={`text-sm px-3 py-1 rounded-2xl font-medium border border-gray-300 ${badgeColor}`}
           >
             {typeLabel}
           </span>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-         <EllipsisVertical className="w-5 h-5 text-gray-500 cursor-pointer" />
+          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <EllipsisVertical className="w-5 h-5 text-gray-500" />
+              </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-48">
+            <DropdownMenuContent className="w-48" align="end">
               <DropdownMenuItem className="cursor-pointer">
                 Rename
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">
                 Change Category
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer text-red-600">
+              <DropdownMenuItem 
+                onClick={handleDeleteClick}
+                className="cursor-pointer text-red-600"
+              >
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </CardHeader>
+
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <div className="text-center">
+              <h2 className="text-lg font-semibold mb-4">Are you sure?</h2>
+              <p className="text-sm text-gray-600 mb-6">
+                Are you sure you want to delete this {name}?
+              </p>
+              <div className="flex justify-center gap-4">
+                <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button  onClick={handleDelete}>
+                  Delete
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Icon area */}
         <div className="flex justify-center items-center bg-neutral-200 mx-8 rounded-xl py-8 mt-2">
@@ -43,11 +84,10 @@ export default function PdfCard({ name, type,createdAt }) {
         </div>
 
         {/* Title and Date */}
-       <CardContent className="mt-4 px-6 text-left gap-2 ">
-  <h1 className="font-bold text-2xl truncate">{name ?? "Untitled"}</h1>
-  <p className="text-sm mt-1">Uploaded on {createdAt?.split("T")[0]}</p>
-</CardContent>
-
+        <CardContent className="mt-4 px-6 text-left gap-2">
+          <h1 className="font-bold text-2xl truncate">{name ?? "Untitled"}</h1>
+          <p className="text-sm mt-1">Uploaded on {createdAt?.split("T")[0]}</p>
+        </CardContent>
 
         {/* View/Download Buttons */}
         <div className="flex justify-around mt-auto mb-4 px-4">
