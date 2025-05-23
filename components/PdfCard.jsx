@@ -5,19 +5,26 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
-
+import { supabase } from "@/lib/supabase";
 export default function PdfCard({ name, type, createdAt }) {
-  const typeLabel = type == "notes" ? "notes" : "question papers";
+  const typeLabel = type == "notes" ? "notes" : "question-papers";
   const badgeColor = type === "notes" ? "bg-gray-100" : "bg-gray-100";
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const handleDelete = () => {
-    // Add your delete logic here
-    console.log("Deleting item:", name);
+const handleDelete = async () => {
+  const { data, error } = await supabase.storage.from(`${typeLabel}`).remove([`uploads/${name}`]);
+
+  if (error) {
+    console.error("Failed to delete PDF:", error);
+    console.log("Error deleting PDF:", typeLabel);
+  } else {
+    console.log("PDF deleted successfully.");
     setDialogOpen(false);
-    setDropdownOpen(false); // Close dropdown after delete
-  };
+    // optionally remove the card from UI
+  }
+};
+
 
   const handleDeleteClick = (e) => {
     e.preventDefault();
