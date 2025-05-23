@@ -20,12 +20,12 @@ export default function Page() {
     <SidebarProvider>
       <div className="flex">
         {/* Sidebar (fixed width) */}
-        <div className="fixed hidden sm:block h-screen w-64 z-10">
+        <div className="fixed hidden sm:block md:block h-screen w-32 z-10">
           <AppSidebar />
         </div>
 
         {/* Main content with left margin to accommodate sidebar */}
-        <div className="sm:ml-64 flex-1 bg-gradient-to-b from-white to-gray-50 min-h-screen overflow-auto px-6 sm:px-10 py-8">
+        <div className="sm:ml-60 flex-1 bg-gradient-to-b from-white to-gray-50 min-h-screen overflow-auto px-6 sm:px-10 py-8">
           
           {/* Header Section */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-6">

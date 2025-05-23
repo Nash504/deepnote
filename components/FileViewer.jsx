@@ -40,7 +40,7 @@ const FileViewer = ({ category }) => {
   else if (category === 'question-papers') itemsToRender = questionPapers.map(qp => ({ ...qp, type: 'question-papers' }))
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-60 lg:gap-84 px-2 sm:px-4 lg:px-40 py-4 sm:py-6 lg:py-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
       {itemsToRender.map((pdf, index) => (
         <motion.div
           key={pdf.name + index}
