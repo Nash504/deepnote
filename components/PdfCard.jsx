@@ -11,6 +11,7 @@ export default function PdfCard({ name, type, createdAt }) {
   const badgeColor = type === "notes" ? "bg-gray-100" : "bg-gray-100";
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
 
 const handleDelete = async () => {
   const { data, error } = await supabase.storage.from(`${typeLabel}`).remove([`uploads/${name}`]);
@@ -33,6 +34,14 @@ const handleDelete = async () => {
     setDropdownOpen(false); // Close dropdown when opening dialog
   };
 
+
+  const getPdfUrl = () => {
+  const { data } = supabase.storage.from(typeLabel).getPublicUrl(`uploads/${name}`);
+  return data?.publicUrl;
+};
+
+
+
   return (
     <div className="flex flex-col items-center">
       <Card className="w-80 h-96 border-2 border-gray-200 shadow-md rounded-xl flex flex-col">
@@ -53,7 +62,7 @@ const handleDelete = async () => {
               <DropdownMenuItem className="cursor-pointer">
                 Rename
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer" onClick={() => alert("Change Category")}>
                 Change Category
               </DropdownMenuItem>
               <DropdownMenuItem 
@@ -85,6 +94,18 @@ const handleDelete = async () => {
           </DialogContent>
         </Dialog>
 
+
+
+      <Dialog open={pdfDialogOpen} onOpenChange={setPdfDialogOpen}>
+  <DialogContent className="sm:max-w-[800px] h-[90vh]">
+    <iframe
+      src={getPdfUrl()}
+      className="w-full h-full"
+      title="PDF Viewer"
+    />
+  </DialogContent>
+</Dialog>
+
         {/* Icon area */}
         <div className="flex justify-center items-center bg-neutral-200 mx-8 rounded-xl py-8 mt-2">
           <StickyNote className="w-12 h-12" />
@@ -98,7 +119,7 @@ const handleDelete = async () => {
 
         {/* View/Download Buttons */}
         <div className="flex justify-around mt-auto mb-4 px-4">
-          <Button variant="ghost" className="flex gap-2 text-black">
+          <Button variant="ghost" className="flex gap-2 text-black"   onClick={() => setPdfDialogOpen(true)}>
             <Eye size={18} /> View
           </Button>
           <Button variant="ghost" className="flex gap-2 text-black">
