@@ -61,13 +61,8 @@ export default function Page() {
               </ToggleGroup>
             </motion.div>
 
-            {/* Animated Upload Button */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex-shrink-0"
-            >
+            {/* Upload Button */}
+            <div className="flex-shrink-0">
               <Button 
                 onClick={() => setUpload(true)}
                 className="flex items-center gap-2"
@@ -75,7 +70,7 @@ export default function Page() {
                 <Plus className="w-4 h-4" />
                 Upload PDFs
               </Button>
-            </motion.div>
+            </div>
           </div>
 
           {/* Upload Section */}

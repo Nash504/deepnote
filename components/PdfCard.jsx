@@ -11,7 +11,7 @@ export default function PdfCard({ name, type, createdAt }) {
   const badgeColor = type === "notes" ? "bg-gray-100" : "bg-gray-100";
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
+ 
 
 const handleDelete = async () => {
   const { data, error } = await supabase.storage.from(`${typeLabel}`).remove([`uploads/${name}`]);
@@ -96,16 +96,7 @@ const handleDelete = async () => {
 
 
 
-      <Dialog open={pdfDialogOpen} onOpenChange={setPdfDialogOpen}>
- <DialogContent className="w-[95vw] h-[90vh] sm:max-w-[800px] sm:h-[90vh] p-0 overflow-hidden">
-  <iframe
-    src={getPdfUrl()}
-    className="w-full h-full"
-    title="PDF Viewer"
-  />
-</DialogContent>
-
-</Dialog>
+   
 
         {/* Icon area */}
         <div className="flex justify-center items-center bg-neutral-200 mx-8 rounded-xl py-8 mt-2">
@@ -120,9 +111,17 @@ const handleDelete = async () => {
 
         {/* View/Download Buttons */}
         <div className="flex justify-around mt-auto mb-4 px-4">
-          <Button variant="ghost" className="flex gap-2 text-black"   onClick={() => setPdfDialogOpen(true)}>
-            <Eye size={18} /> View
-          </Button>
+     <Button
+  variant="ghost"
+  className="flex gap-2 text-black"
+  onClick={() => {
+    const url = getPdfUrl();
+    window.open(url, "_blank");
+  }}
+>
+  <Eye size={18} /> View
+</Button>
+
           <Button variant="ghost" className="flex gap-2 text-black">
             <Download size={18} /> Download
           </Button>
