@@ -97,13 +97,14 @@ const handleDelete = async () => {
 
 
       <Dialog open={pdfDialogOpen} onOpenChange={setPdfDialogOpen}>
-  <DialogContent className="sm:max-w-[800px] h-[90vh]">
-    <iframe
-      src={getPdfUrl()}
-      className="w-full h-full"
-      title="PDF Viewer"
-    />
-  </DialogContent>
+ <DialogContent className="w-[95vw] h-[90vh] sm:max-w-[800px] sm:h-[90vh] p-0 overflow-hidden">
+  <iframe
+    src={getPdfUrl()}
+    className="w-full h-full"
+    title="PDF Viewer"
+  />
+</DialogContent>
+
 </Dialog>
 
         {/* Icon area */}
