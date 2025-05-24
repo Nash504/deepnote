@@ -1,5 +1,5 @@
 "use client";
-import { StickyNote, Eye, Download, EllipsisVertical } from "lucide-react";
+import { StickyNote, Eye, Download, EllipsisVertical ,Plus, MessageSquare,BookOpen} from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -11,7 +11,7 @@ export default function PdfCard({ name, type, createdAt }) {
   const badgeColor = type === "notes" ? "bg-gray-100" : "bg-gray-100";
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
- 
+  const [maindialogOpen, setMainDialogOpen] = useState(false);
 
 const handleDelete = async () => {
   const { data, error } = await supabase.storage.from(`${typeLabel}`).remove([`uploads/${name}`]);
@@ -44,7 +44,7 @@ const handleDelete = async () => {
 
   return (
     <div className="flex flex-col items-center">
-      <Card className="w-80 h-96 border-2 border-gray-200 shadow-md rounded-xl flex flex-col">
+      <Card onClick={() =>setMainDialogOpen(true)} className="w-80 h-96 border-2 border-gray-200 shadow-md rounded-xl flex flex-col">
         {/* Top Tag and Menu */}
         <CardHeader className="flex justify-between items-center">
           <span
@@ -94,13 +94,32 @@ const handleDelete = async () => {
           </DialogContent>
         </Dialog>
 
+        <Dialog open={maindialogOpen} onOpenChange={setMainDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <div className="text-left">
+              <h2 className="text-lg font-semibold mb-4">{name}</h2>
+                <span
+            className={`text-sm px-3 py-1 rounded-2xl font-medium border border-gray-300 ${badgeColor}`}
+          >
+            {typeLabel}
+          </span>
+            </div>
+            <div className="flex flex-col gap-4 justify-between mt-4">
+              <Button>
+  <BookOpen size={18} /> View Flashcards
+</Button>
 
+<Button variant="outline">
+  <MessageSquare size={18} /> Chat with PDF
+</Button>
 
-   
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Icon area */}
         <div className="flex justify-center items-center bg-neutral-200 mx-8 rounded-xl py-8 mt-2">
-          <StickyNote className="w-12 h-12" />
+          <StickyNote  className="w-12 h-12" />
         </div>
 
         {/* Title and Date */}
