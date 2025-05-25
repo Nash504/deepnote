@@ -15,16 +15,29 @@ const FileViewer = ({ category }) => {
     const fetchFiles = async () => {
       const userPath = `users/${user.id}/uploads`
 
-      const [{ data: qpData, error: qpError }, { data: nData, error: nError }] = await Promise.all([
+      const [qpList, nList] = await Promise.all([
         supabase.storage.from('question-papers').list(userPath, { limit: 100 }),
         supabase.storage.from('notes').list(userPath, { limit: 100 }),
       ])
 
-      if (qpError) console.error('Error loading question papers:', qpError)
-      else setQuestionPapers(qpData)
+      const getSize = async (bucket, files) => {
+        return Promise.all(files.map(async (file) => {
+          const { data } = await supabase.storage.from(bucket).download(`${userPath}/${file.name}`)
+          return { ...file, size: data?.size || 0 }
+        }))
+      }
 
-      if (nError) console.error('Error loading notes:', nError)
-      else setNotes(nData)
+      if (qpList.error) console.error('Error loading question papers:', qpList.error)
+      else {
+        const withSize = await getSize('question-papers', qpList.data)
+        setQuestionPapers(withSize)
+      }
+
+      if (nList.error) console.error('Error loading notes:', nList.error)
+      else {
+        const withSize = await getSize('notes', nList.data)
+        setNotes(withSize)
+      }
     }
 
     fetchFiles()
@@ -57,6 +70,7 @@ const FileViewer = ({ category }) => {
             name={pdf.name}
             type={pdf.type}
             createdAt={pdf.created_at}
+            size={pdf.size}
           />
         </motion.div>
       ))}

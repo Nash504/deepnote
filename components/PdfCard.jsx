@@ -23,7 +23,7 @@ import Link from "next/link";
 
 
 
-export default function PdfCard({ name, type, createdAt }) {
+export default function PdfCard({ name, type, createdAt,size }) {
   const typeLabel = type === "notes" ? "notes" : "question-papers";
   const badgeColor = "bg-gray-100";
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -59,6 +59,18 @@ export default function PdfCard({ name, type, createdAt }) {
     return data?.publicUrl;
   };
 
+
+  const formatBytes = (bytes) => {
+  if (!bytes) return "";
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+};
+
+
+
+
+
   return (
     <div className="flex flex-col items-center">
       <Card
@@ -71,6 +83,7 @@ export default function PdfCard({ name, type, createdAt }) {
             className={`text-sm px-3 py-1 rounded-2xl font-medium border border-gray-300 ${badgeColor}`}
           >
             {typeLabel}
+           
           </span>
           <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
@@ -157,7 +170,8 @@ export default function PdfCard({ name, type, createdAt }) {
         <CardContent className="mt-4 px-6 text-left gap-2">
           <h1 className="font-bold text-2xl truncate">{name ?? "Untitled"}</h1>
           <p className="text-sm mt-1">
-            Uploaded on {createdAt?.split("T")[0]}
+            Uploaded on {createdAt?.split("T")[0]} <br />
+               Size: {formatBytes(size)}
           </p>
         </CardContent>
 

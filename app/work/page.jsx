@@ -16,7 +16,7 @@ import { Plus } from "lucide-react";
 
 export default function Page() {
   const { user } = useUser();
-  const [type, setType] = useState("question-papers");
+  const [type, setType] = useState("all");
   const [upload, setUpload] = useState(false);
  
   return (
