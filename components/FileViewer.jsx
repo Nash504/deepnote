@@ -7,6 +7,7 @@ import { useUser } from '@clerk/nextjs'
 const FileViewer = ({ category }) => {
   const [questionPapers, setQuestionPapers] = useState([])
   const [notes, setNotes] = useState([])
+  const [totalSize, setTotalSize] = useState(0)
   const { user } = useUser()
 
   useEffect(() => {
@@ -21,23 +22,37 @@ const FileViewer = ({ category }) => {
       ])
 
       const getSize = async (bucket, files) => {
-        return Promise.all(files.map(async (file) => {
-          const { data } = await supabase.storage.from(bucket).download(`${userPath}/${file.name}`)
-          return { ...file, size: data?.size || 0 }
-        }))
+        let total = 0
+        const result = await Promise.all(
+          files.map(async (file) => {
+            const { data } = await supabase.storage.from(bucket).download(`${userPath}/${file.name}`)
+            const size = data?.size || 0
+            total += size
+            return { ...file, size }
+          })
+        )
+        return { result, total }
       }
 
-      if (qpList.error) console.error('Error loading question papers:', qpList.error)
-      else {
-        const withSize = await getSize('question-papers', qpList.data)
-        setQuestionPapers(withSize)
+      let sizeSum = 0
+
+      if (!qpList.error) {
+        const { result, total } = await getSize('question-papers', qpList.data)
+        setQuestionPapers(result)
+        sizeSum += total
+      } else {
+        console.error('Error loading question papers:', qpList.error)
       }
 
-      if (nList.error) console.error('Error loading notes:', nList.error)
-      else {
-        const withSize = await getSize('notes', nList.data)
-        setNotes(withSize)
+      if (!nList.error) {
+        const { result, total } = await getSize('notes', nList.data)
+        setNotes(result)
+        sizeSum += total
+      } else {
+        console.error('Error loading notes:', nList.error)
       }
+
+      setTotalSize(sizeSum)
     }
 
     fetchFiles()
@@ -57,24 +72,27 @@ const FileViewer = ({ category }) => {
   else if (category === 'question-papers') itemsToRender = questionPapers.map(qp => ({ ...qp, type: 'question-papers' }))
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
-      {itemsToRender.map((pdf, index) => (
-        <motion.div
-          key={pdf.name + index}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.1 }}
-          className="flex justify-center w-full"
-        >
-          <PdfCard
-            name={pdf.name}
-            type={pdf.type}
-            createdAt={pdf.created_at}
-            size={pdf.size}
-          />
-        </motion.div>
-      ))}
-    </div>
+    <>
+      <p className="text-center text-sm text-gray-500">Total size: {(totalSize / 1024 / 1024).toFixed(2)} MB</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+        {itemsToRender.map((pdf, index) => (
+          <motion.div
+            key={pdf.name + index}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="flex justify-center w-full"
+          >
+            <PdfCard
+              name={pdf.name}
+              type={pdf.type}
+              createdAt={pdf.created_at}
+              size={pdf.size}
+            />
+          </motion.div>
+        ))}
+      </div>
+    </>
   )
 }
 
