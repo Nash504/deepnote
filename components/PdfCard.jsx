@@ -19,6 +19,9 @@ import {
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import Link from "next/link";
+
+
 
 export default function PdfCard({ name, type, createdAt }) {
   const typeLabel = type === "notes" ? "notes" : "question-papers";
@@ -127,9 +130,12 @@ export default function PdfCard({ name, type, createdAt }) {
               <Button>
                 <BookOpen size={18} /> View Flashcards
               </Button>
-              <Button variant="outline">
-                <MessageSquare size={18} /> Chat with PDF
+            <Link href="/chat" target="_blank"  className="w-full">
+              <Button variant="outline" className="w-full">
+                  <MessageSquare size={18} /> Chat with PDF
               </Button>
+              </Link>
+
             </div>:
              <div className="flex flex-col gap-4 justify-between mt-4">
               <Button>
