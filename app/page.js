@@ -1,8 +1,8 @@
 import Image from "next/image";
-import Landing from "../components/Landing";
-import Bento from "../components/Bento";
+import Landing from "../components/landing_page/Landing";
+import Bento from "../components/landing_page/Bento";
 
-import { Footer2 } from "../components/footer2";
+import { Footer2 } from "../components/landing_page/footer2";
 export default function Home() {
   return (
     <div className="w-full">

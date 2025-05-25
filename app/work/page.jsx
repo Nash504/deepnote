@@ -1,11 +1,11 @@
 "use client";
-import AppSidebar from "@/components/app-sidebar";
+import AppSidebar from "@/components/dashboard/app-sidebar";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import FileViewer from "@/components/FileViewer";
+import FileViewer from "@/components/dashboard/FileViewer";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import SupabaseUploader from "@/components/SupabaseUploader";
+import SupabaseUploader from "@/components/dashboard/SupabaseUploader";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
@@ -20,15 +20,11 @@ export default function Page() {
   const [upload, setUpload] = useState(false);
  
   return (
-    <SidebarProvider>
-      <div className="flex">
-        {/* Sidebar (fixed width) */}
-        <div className="fixed hidden sm:block md:block h-screen w-32 z-10">
-          <AppSidebar />
-        </div>
+   
 
-        {/* Main content with left margin to accommodate sidebar */}
-        <div className="sm:ml-60 flex-1 bg-gradient-to-b from-white to-gray-50 min-h-screen overflow-auto px-6 sm:px-10 py-8">
+
+        <div className="flex-1 bg-gradient-to-b from-white to-gray-50 min-h-screen overflow-auto px-6 sm:px-10 py-8">
+
           
         
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-6">
@@ -65,15 +61,18 @@ export default function Page() {
             </motion.div>
 
             {/* Upload Button */}
-            <div className="flex-shrink-0">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}>
               <Button 
                 onClick={() => setUpload(true)}
-                className="flex items-center gap-2"
+                className="flex items-center  gap-8 text-md py-6"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-4 h-4 " />
                 Upload PDFs
               </Button>
-            </div>
+            </motion.div>
           </div>
 
           {/* Upload Section */}
@@ -94,8 +93,8 @@ export default function Page() {
                 <SupabaseUploader type={type} className="w-full" />
 
                 {/* Document Type Selection */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                <div className="text-xl font-medium text-gray-800">
+                  <label className="block font-medium text-gray-700 mb-3">
                     Document Type
                   </label>
                   <RadioGroup
@@ -103,7 +102,7 @@ export default function Page() {
                     onValueChange={setType}
                     className="flex flex-row gap-6 flex-wrap"
                   >
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center  font-medium space-x-2">
                       <RadioGroupItem
                         value="question-papers"
                         id="question-papers"
@@ -143,7 +142,6 @@ export default function Page() {
             <FileViewer category={type} />
           </div>
         </div>
-      </div>
-    </SidebarProvider>
+     
   );
 }

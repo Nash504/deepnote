@@ -5,7 +5,7 @@ import Uppy from '@uppy/core'
 import { Dashboard } from '@uppy/react'
 import '@uppy/core/dist/style.css'
 import '@uppy/dashboard/dist/style.css'
-import { supabase } from '../lib/supabase'
+import { supabase } from '../../lib/supabase'
 import { motion } from 'framer-motion'
 import { AlertCircle, CheckCircle2, Upload } from 'lucide-react'
 import { useUser } from "@clerk/nextjs";
@@ -101,13 +101,14 @@ export default function SupabaseUploader({ type }) {
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="w-fullrounded-lg overflow-hidden border bg-background">
+          <div className="rounded-lg overflow-hidden border bg-background border-black">
             <Dashboard 
               uppy={uppy} 
               proudlyDisplayPoweredByUppy={false}
               theme="light" 
               width="100%" 
-              height={350}
+              height={160 }
+              color="#c2f245"
               showLinkToFileUploadResult={false}
               showProgressDetails={true}
               note={`Upload your ${type.replace('-', ' ')} here. Maximum 5 files.`}

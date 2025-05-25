@@ -1,5 +1,5 @@
 'use client';
-import { Card } from "./ui/card"; // Assuming Card is a simple wrapper or div
+import {Card} from "@/components/ui/card";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { ChevronRight, Zap, BarChart3, ArrowRight,Brain, Sparkles,Timer,Star,Scale } from "lucide-react";

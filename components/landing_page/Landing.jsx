@@ -1,9 +1,9 @@
 'use client'
 import Image from "next/image";
-import { Card, CardTitle, CardHeader, CardDescription, CardContent, CardFooter } from "./ui/card";
-import { Button } from "./ui/button";
+import { Card, CardTitle, CardHeader, CardDescription, CardContent, CardFooter } from "../ui/card";
+import { Button } from "../ui/button";
 
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 import { ArrowRight, Plus, Mic, Sparkles, FileText, Link } from "lucide-react";
 
 import { useInView } from 'react-intersection-observer';

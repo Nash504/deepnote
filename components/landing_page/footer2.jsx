@@ -1,7 +1,7 @@
 'use client';
 import { Notebook } from "lucide-react";
 import { GitHubLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { Heart } from "lucide-react";
 
 const Footer2 = ({
