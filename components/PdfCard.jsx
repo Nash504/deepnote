@@ -130,7 +130,7 @@ export default function PdfCard({ name, type, createdAt }) {
               <Button>
                 <BookOpen size={18} /> View Flashcards
               </Button>
-            <Link href="/chat" target="_blank"  className="w-full">
+            <Link href="/work/chat"   className="w-full">
               <Button variant="outline" className="w-full">
                   <MessageSquare size={18} /> Chat with PDF
               </Button>

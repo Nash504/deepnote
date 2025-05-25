@@ -2,16 +2,22 @@ import React, { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import PdfCard from './PdfCard'
 import { motion } from 'framer-motion'
+import { useUser } from '@clerk/nextjs'
 
 const FileViewer = ({ category }) => {
   const [questionPapers, setQuestionPapers] = useState([])
   const [notes, setNotes] = useState([])
+  const { user } = useUser()
 
   useEffect(() => {
+    if (!user) return
+
     const fetchFiles = async () => {
+      const userPath = `users/${user.id}/uploads`
+
       const [{ data: qpData, error: qpError }, { data: nData, error: nError }] = await Promise.all([
-        supabase.storage.from('question-papers').list('uploads', { limit: 100 }),
-        supabase.storage.from('notes').list('uploads', { limit: 100 }),
+        supabase.storage.from('question-papers').list(userPath, { limit: 100 }),
+        supabase.storage.from('notes').list(userPath, { limit: 100 }),
       ])
 
       if (qpError) console.error('Error loading question papers:', qpError)
@@ -22,9 +28,8 @@ const FileViewer = ({ category }) => {
     }
 
     fetchFiles()
-  }, [])
+  }, [user])
 
-  // Combine and alternate notes and question papers
   const maxLength = Math.max(notes.length, questionPapers.length)
   const mixedItems = []
 
@@ -33,7 +38,6 @@ const FileViewer = ({ category }) => {
     if (questionPapers[i]) mixedItems.push({ ...questionPapers[i], type: 'question-papers' })
   }
 
-  // Decide which list to render
   let itemsToRender = []
   if (category === 'all') itemsToRender = mixedItems
   else if (category === 'notes') itemsToRender = notes.map(n => ({ ...n, type: 'notes' }))

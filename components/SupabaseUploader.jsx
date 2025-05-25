@@ -8,12 +8,15 @@ import '@uppy/dashboard/dist/style.css'
 import { supabase } from '../lib/supabase'
 import { motion } from 'framer-motion'
 import { AlertCircle, CheckCircle2, Upload } from 'lucide-react'
+import { useUser } from "@clerk/nextjs";
 
 export default function SupabaseUploader({ type }) {
   const [uppy, setUppy] = useState(null)
   const [uploadStatus, setUploadStatus] = useState(null) // 'success', 'error', or null
   const [uploadMessage, setUploadMessage] = useState('')
-  
+  const { user } = useUser();
+  const userId = user?.id;
+
   useEffect(() => {
     const instance = new Uppy({
       restrictions: { maxNumberOfFiles: 5 },
@@ -29,10 +32,10 @@ export default function SupabaseUploader({ type }) {
       let success = true
       let successCount = 0
       
-      for (const file of result.successful) {
+    for (const file of result.successful) {
         const { data, error } = await supabase.storage
           .from(type)
-          .upload(`uploads/${file.name}`, file.data, {
+          .upload(`users/${userId}/uploads/${file.name}`, file.data, {
             cacheControl: '3600',
             upsert: true,
           })
@@ -98,7 +101,7 @@ export default function SupabaseUploader({ type }) {
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="rounded-lg overflow-hidden border bg-background">
+          <div className="w-fullrounded-lg overflow-hidden border bg-background">
             <Dashboard 
               uppy={uppy} 
               proudlyDisplayPoweredByUppy={false}
