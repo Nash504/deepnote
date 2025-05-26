@@ -20,7 +20,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
-
+import { useUser } from "@clerk/nextjs";
 
 
 export default function PdfCard({ name, type, createdAt,size }) {
@@ -29,11 +29,12 @@ export default function PdfCard({ name, type, createdAt,size }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [maindialogOpen, setMainDialogOpen] = useState(false);
-
+    const { user } = useUser();
+  const userId = user?.id;
   const handleDelete = async () => {
     const { data, error } = await supabase.storage
       .from(`${typeLabel}`)
-      .remove([`uploads/${name}`]);
+      .remove([`users/${userId}/uploads/${name}`]);
 
     if (error) {
       console.error("Failed to delete PDF:", error);
@@ -74,7 +75,7 @@ export default function PdfCard({ name, type, createdAt,size }) {
   return (
     <div className="flex flex-col items-center">
       <Card
-        onClick={() => setMainDialogOpen(true)}
+       
         className="w-80 h-96 border-2 border-gray-200 shadow-md rounded-xl flex flex-col"
       >
         {/* Top Tag and Menu */}
@@ -163,7 +164,7 @@ export default function PdfCard({ name, type, createdAt,size }) {
 
         {/* Icon area */}
         <div className="flex justify-center items-center bg-neutral-200 mx-8 rounded-xl py-8 mt-2">
-          <StickyNote className="w-12 h-12" />
+          <StickyNote  onClick={() => setMainDialogOpen(true)} className="w-12 h-12" />
         </div>
 
         {/* Title and Date */}

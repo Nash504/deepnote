@@ -82,7 +82,7 @@ const percentUsed = (totalSize / (MAX_STORAGE_MB * 1024 * 1024)) * 100
       <p className="text-center text-sm text-gray-500">Total size: {(totalSize / 1024 / 1024).toFixed(2)} MB/100MB</p>
       <Progress value={percentUsed} className="w-full max-w-md mx-auto mt-2" />
       </motion.div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mt-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
         {itemsToRender.map((pdf, index) => (
           <motion.div
             key={pdf.name + index}

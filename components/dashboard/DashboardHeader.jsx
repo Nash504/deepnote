@@ -10,7 +10,7 @@ import {
 
 export default function DashboardHeader({ user }) {
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
+    <div className="flex flex-row items-start  gap-4 mb-4">
       <SignedOut>
         <SignInButton mode="redirect" redirectUrl={"/work"}>
           <button className="hidden sm:inline-block text-white/90 hover:text-lime-400 transition-colors text-sm sm:text-base">
@@ -38,10 +38,10 @@ export default function DashboardHeader({ user }) {
       </SignedIn>
 
       <div>
-        <h1 className="text-4xl font-light font-space-grotesk bg-black bg-clip-text text-transparent">
+        <h1 className="text-4xl text-left font-light font-space-grotesk ">
           {user?.firstName ? `Welcome, ${user.firstName}` : "Hello Scholar"}
         </h1>
-        <p className="mt-2 text-gray-500">Manage your notes and question papers</p>
+       
       </div>
     </div>
   );

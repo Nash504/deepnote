@@ -26,15 +26,21 @@ export default function Page() {
           <DashboardHeader user={user} />
           <CategoryToggle type={type} setType={setType} />
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <Button onClick={() => setUpload(true)} className="flex items-center gap-8 text-md py-6">
-            <Plus className="w-4 h-4" />
-            Upload PDFs
-          </Button>
+   <motion.div
+  className="w-full sm:w-auto"
+  initial={{ opacity: 0, y: -20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5, delay: 0.2 }}
+>
+
+         <Button
+  onClick={() => setUpload(true)}
+  className="bg-gray-900 text-white hover:bg-gray-800 w-full sm:w-auto px-4 py-2 flex items-center gap-2 justify-center"
+>
+  <Plus className="w-4 h-4" />
+  Upload PDFs
+</Button>
+
         </motion.div>
       </div>
       {upload && (

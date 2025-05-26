@@ -107,7 +107,7 @@ export default function SupabaseUploader({ type }) {
               proudlyDisplayPoweredByUppy={false}
               theme="light" 
               width="100%" 
-              height={160 }
+              height={300 }
               color="#c2f245"
               showLinkToFileUploadResult={false}
               showProgressDetails={true}

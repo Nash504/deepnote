@@ -9,17 +9,17 @@ export default function CategoryToggle({ type, setType }) {
       type="single"
       value={type}
       onValueChange={(value) => value && setType(value)}
-      className="mt-6 flex gap-2 flex-wrap"
+      className=" flex flex-wrap gap-4 sm:gap-6"
     >
-      <ToggleGroupItem value="all" className="px-4 py-2">
+      <ToggleGroupItem value="all" className="flex items-center gap-2 px-3 py-2 text-sm sm:text-base">
         <FolderOpen className="w-4 h-4" />
         All PDFs
       </ToggleGroupItem>
-      <ToggleGroupItem value="notes" className="px-4 py-2">
+      <ToggleGroupItem value="notes" className="flex items-center gap-2 px-3 py-2 text-sm sm:text-base">
         <FileText className="w-4 h-4" />
         Notes
       </ToggleGroupItem>
-      <ToggleGroupItem value="question-papers" className="px-4 py-2">
+      <ToggleGroupItem value="question-papers" className="flex items-center gap-2 px-3 py-2 text-sm sm:text-base">
         <BookOpen className="w-4 h-4" />
         Question Papers
       </ToggleGroupItem>
