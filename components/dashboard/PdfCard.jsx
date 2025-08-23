@@ -22,14 +22,13 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 
-
-export default function PdfCard({ name, type, createdAt,size }) {
+export default function PdfCard({ name, type, createdAt, size }) {
   const typeLabel = type === "notes" ? "notes" : "question-papers";
   const badgeColor = "bg-gray-100";
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [maindialogOpen, setMainDialogOpen] = useState(false);
-    const { user } = useUser();
+  const { user } = useUser();
   const userId = user?.id;
   const handleDelete = async () => {
     const { data, error } = await supabase.storage
@@ -56,35 +55,26 @@ export default function PdfCard({ name, type, createdAt,size }) {
   const getPdfUrl = () => {
     const { data } = supabase.storage
       .from(typeLabel)
-      .getPublicUrl(`uploads/${name}`);
+      .getPublicUrl(`users/${userId}/uploads/${name}`);
     return data?.publicUrl;
   };
 
-
   const formatBytes = (bytes) => {
-  if (!bytes) return "";
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
-};
-
-
-
-
+    if (!bytes) return "";
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return (bytes / Math.pow(1024, i)).toFixed(2) + " " + sizes[i];
+  };
 
   return (
     <div className="flex flex-col items-center">
-      <Card
-       
-        className="w-80 h-96 border-2 border-gray-200 shadow-md rounded-xl flex flex-col"
-      >
+      <Card className="w-80 h-96 border-2 border-gray-200 shadow-md rounded-xl flex flex-col">
         {/* Top Tag and Menu */}
         <CardHeader className="flex justify-between items-center">
           <span
             className={`text-sm px-3 py-1 rounded-2xl font-medium border border-gray-300 ${badgeColor}`}
           >
             {typeLabel}
-           
           </span>
           <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
@@ -139,32 +129,36 @@ export default function PdfCard({ name, type, createdAt,size }) {
                 {typeLabel}
               </span>
             </div>
-            {typeLabel==="question-papers" ?
-            <div className="flex flex-col gap-4 justify-between mt-4">
-              <Button>
-                <BookOpen size={18} /> View Flashcards
-              </Button>
-            <Link href="/work/chat"   className="w-full">
-              <Button variant="outline" className="w-full">
-                  <MessageSquare size={18} /> Chat with PDF
-              </Button>
-              </Link>
-
-            </div>:
-             <div className="flex flex-col gap-4 justify-between mt-4">
-              <Button>
-                <BookOpen size={18} /> View Questions
-              </Button>
-              <Button variant="outline">
-                <MessageSquare size={18} /> View Answers
-              </Button>
-            </div>}
+            {typeLabel === "question-papers" ? (
+              <div className="flex flex-col gap-4 justify-between mt-4">
+                <Button>
+                  <BookOpen size={18} /> View Flashcards
+                </Button>
+                <Link href="/work/chat" className="w-full">
+                  <Button variant="outline" className="w-full">
+                    <MessageSquare size={18} /> Chat with PDF
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4 justify-between mt-4">
+                <Button>
+                  <BookOpen size={18} /> View Questions
+                </Button>
+                <Button variant="outline">
+                  <MessageSquare size={18} /> View Answers
+                </Button>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
 
         {/* Icon area */}
         <div className="flex justify-center items-center bg-neutral-200 mx-8 rounded-xl py-8 mt-2">
-          <StickyNote  onClick={() => setMainDialogOpen(true)} className="w-12 h-12" />
+          <StickyNote
+            onClick={() => setMainDialogOpen(true)}
+            className="w-12 h-12"
+          />
         </div>
 
         {/* Title and Date */}
@@ -172,7 +166,7 @@ export default function PdfCard({ name, type, createdAt,size }) {
           <h1 className="font-bold text-2xl truncate">{name ?? "Untitled"}</h1>
           <p className="text-sm mt-1">
             Uploaded on {createdAt?.split("T")[0]} <br />
-               Size: {formatBytes(size)}
+            Size: {formatBytes(size)}
           </p>
         </CardContent>
 
