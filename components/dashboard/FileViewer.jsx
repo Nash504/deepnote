@@ -6,9 +6,10 @@ import { Badge } from "../ui/badge";
 import { motion } from "framer-motion";
 import { useUser } from "@clerk/nextjs";
 import { Progress } from "../ui/progress";
-import { Skeleton } from "../ui/skeleton"; // Assuming this is the correct import path for your project
+import { Skeleton } from "../ui/skeleton";
+import ListCard from "./ListCard";
 
-// Skeleton component for the storage usage card using shadcn/ui Skeleton
+// Skeleton component for the storage usage card
 const StorageCardSkeleton = () => (
   <div className="mb-8">
     <Skeleton className="h-5 w-1/2 mx-auto mb-2" />
@@ -27,7 +28,7 @@ const StorageCardSkeleton = () => (
   </div>
 );
 
-// Skeleton component for an individual PDF card using shadcn/ui Skeleton
+// Skeleton component for an individual PDF card
 const PdfCardSkeleton = () => (
   <div className="w-full max-w-sm mx-auto">
     <Card className="h-48 flex flex-col justify-between p-4">
@@ -45,11 +46,11 @@ const PdfCardSkeleton = () => (
   </div>
 );
 
-const FileViewer = ({ category }) => {
+const FileViewer = ({ category, viewMode, upload, Deleted }) => {
   const [questionPapers, setQuestionPapers] = useState([]);
   const [notes, setNotes] = useState([]);
   const [totalSize, setTotalSize] = useState(0);
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true);
   const { user } = useUser();
   const MAX_STORAGE_MB = 100;
   const percentUsed = (totalSize / (MAX_STORAGE_MB * 1024 * 1024)) * 100;
@@ -58,70 +59,54 @@ const FileViewer = ({ category }) => {
     if (!user) return;
 
     const fetchFiles = async () => {
-      setLoading(true); // Start loading
+      setLoading(true);
       try {
         const userPath = `users/${user.id}/uploads`;
 
-        const [qpList, nList] = await Promise.all([
-          supabase.storage
-            .from("question-papers")
-            .list(userPath, { limit: 100 }),
-          supabase.storage.from("notes").list(userPath, { limit: 100 }),
-        ]);
+        // Using Supabase SDK v2. `list` returns { data, error }
+        const { data: qpData, error: qpError } = await supabase.storage
+          .from("question-papers")
+          .list(userPath, {
+            limit: 100,
+            sortBy: { column: "created_at", order: "desc" },
+          });
 
-        const getSize = async (bucket, files) => {
-          let total = 0;
-          if (!files) return { result: [], total: 0 };
-          const result = await Promise.all(
-            files.map(async (file) => {
-              // Note: Downloading the file just to get the size can be inefficient.
-              // If Supabase Storage API provides size in the `list` method in the future,
-              // that would be more optimal. For now, this approach is necessary.
-              const { data } = await supabase.storage
-                .from(bucket)
-                .download(`${userPath}/${file.name}`);
-              const size = data?.size || 0;
-              total += size;
-              return { ...file, size };
-            })
-          );
-          return { result, total };
-        };
+        const { data: nData, error: nError } = await supabase.storage
+          .from("notes")
+          .list(userPath, {
+            limit: 100,
+            sortBy: { column: "created_at", order: "desc" },
+          });
 
-        let sizeSum = 0;
+        if (qpError) throw qpError;
+        if (nError) throw nError;
 
-        if (!qpList.error) {
-          const { result, total } = await getSize(
-            "question-papers",
-            qpList.data
-          );
+        // The file objects from `list` now include metadata like size
+        const qpFiles = qpData.map((file) => ({
+          ...file,
+          size: file.metadata.size,
+        }));
+        const nFiles = nData.map((file) => ({
+          ...file,
+          size: file.metadata.size,
+        }));
 
-          setQuestionPapers(result);
-          sizeSum += total;
-        } else {
-          console.error("Error loading question papers:", qpList.error);
-        }
+        const qpTotalSize = qpFiles.reduce((sum, file) => sum + file.size, 0);
+        const nTotalSize = nFiles.reduce((sum, file) => sum + file.size, 0);
 
-        if (!nList.error) {
-          const { result, total } = await getSize("notes", nList.data);
-          setNotes(result);
-          sizeSum += total;
-        } else {
-          console.error("Error loading notes:", nList.error);
-        }
-
-        setTotalSize(sizeSum);
+        setQuestionPapers(qpFiles);
+        setNotes(nFiles);
+        setTotalSize(qpTotalSize + nTotalSize);
       } catch (error) {
         console.error("An error occurred while fetching files:", error);
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     };
 
     fetchFiles();
-  }, [user]);
+  }, [user, upload, Deleted]);
 
-  // Render skeleton UI while loading
   if (loading) {
     return (
       <>
@@ -135,75 +120,63 @@ const FileViewer = ({ category }) => {
     );
   }
 
-  const maxLength = Math.max(notes.length, questionPapers.length);
-  const mixedItems = [];
+  // Filtering logic
+  const allFiles = [
+    ...notes.map((n) => ({ ...n, type: "notes" })),
+    ...questionPapers.map((qp) => ({ ...qp, type: "question-papers" })),
+  ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-  for (let i = 0; i < maxLength; i++) {
-    if (notes[i]) mixedItems.push({ ...notes[i], type: "notes" });
-    if (questionPapers[i])
-      mixedItems.push({ ...questionPapers[i], type: "question-papers" });
-  }
-
-  let itemsToRender = [];
-  if (category === "all") itemsToRender = mixedItems;
-  else if (category === "notes")
-    itemsToRender = notes.map((n) => ({ ...n, type: "notes" }));
-  else if (category === "question-papers")
-    itemsToRender = questionPapers.map((qp) => ({
-      ...qp,
-      type: "question-papers",
-    }));
+  const itemsToRender =
+    category === "all"
+      ? allFiles
+      : category === "notes"
+      ? notes.map((n) => ({ ...n, type: "notes" }))
+      : questionPapers.map((qp) => ({ ...qp, type: "question-papers" }));
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <p className="text-center text-sm text-muted-foreground">
-          Total size: {(totalSize / 1024 / 1024).toFixed(2)} MB/100MB
-        </p>
-        <Card className="mb-8 border-border shadow-sm hover:shadow-md transition-shadow duration-200">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-semibold text-foreground">
-                  Storage Usage
-                </h3>
-                <p className="text-muted-foreground">
-                  {(totalSize / 1024 / 1024).toFixed(2)} MB of 100 MB used
-                </p>
-              </div>
-              <Badge
-                variant="outline"
-                className="border-accent-foreground/50 text-accent-foreground"
-              >
-                {percentUsed.toFixed(1)}% Full
-              </Badge>
-            </div>
-            <Progress value={percentUsed} className="h-3 bg-muted" />
-          </CardContent>
-        </Card>
-      </motion.div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
-        {itemsToRender.map((pdf, index) => (
-          <motion.div
-            key={pdf.name + index}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="flex justify-center w-full"
-          >
-            <PdfCard
-              name={pdf.name}
-              type={pdf.type}
-              createdAt={pdf.created_at}
-              size={pdf.size}
-            />
-          </motion.div>
-        ))}
-      </div>
+      {/* --- Storage Usage Card --- */}
+
+      {/* --- Conditional Rendering for Grid or List View --- */}
+      {viewMode === "grid" ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+          {itemsToRender.map((pdf, index) => (
+            <motion.div
+              key={pdf.id || pdf.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className="w-full"
+            >
+              <PdfCard
+                name={pdf.name}
+                type={pdf.type}
+                createdAt={pdf.created_at}
+                size={pdf.size}
+              />
+            </motion.div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4 mt-8">
+          {itemsToRender.map((pdf, index) => (
+            <motion.div
+              key={pdf.id || pdf.name}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className="w-full"
+            >
+              <ListCard
+                name={pdf.name}
+                type={pdf.type}
+                createdAt={pdf.created_at}
+                size={pdf.size}
+              />
+            </motion.div>
+          ))}
+        </div>
+      )}
     </>
   );
 };

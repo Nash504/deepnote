@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import CategoryToggle from "@/components/dashboard/CategoryToggle";
 import UploadPanel from "@/components/dashboard/UploadPanel";
@@ -8,10 +8,11 @@ import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
-
+import ProgressBar from "@/components/dashboard/ProgressBar";
 export default function Page() {
   const { user } = useUser();
   const [type, setType] = useState("all");
+  const [viewMode, setViewMode] = useState("grid");
   const [upload, setUpload] = useState(false);
 
   return (
@@ -24,23 +25,20 @@ export default function Page() {
           className="flex-1"
         >
           <DashboardHeader user={user} />
-          <CategoryToggle type={type} setType={setType} />
         </motion.div>
-   <motion.div
-  className="w-full sm:w-auto"
-  initial={{ opacity: 0, y: -20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5, delay: 0.2 }}
->
-
-         <Button
-  onClick={() => setUpload(true)}
-  className="bg-gray-900 text-white hover:bg-gray-800 w-full sm:w-auto px-4 py-2 flex items-center gap-2 justify-center"
->
-  <Plus className="w-4 h-4" />
-  Upload PDFs
-</Button>
-
+        <motion.div
+          className="w-full sm:w-auto"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <Button
+            onClick={() => setUpload(true)}
+            className="bg-gray-900 text-white hover:bg-gray-800 w-full sm:w-auto px-4 py-2 flex items-center gap-2 justify-center"
+          >
+            <Plus className="w-4 h-4" />
+            Upload PDFs
+          </Button>
         </motion.div>
       </div>
       {upload && (
@@ -54,7 +52,14 @@ export default function Page() {
         </motion.div>
       )}
       <div className="mt-10">
-        <FileViewer category={type} />
+        <ProgressBar />
+        <CategoryToggle
+          type={type}
+          setType={setType}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+        />
+        <FileViewer category={type} viewMode={viewMode} upload={upload} />
       </div>
     </div>
   );
