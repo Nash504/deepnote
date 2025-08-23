@@ -163,7 +163,9 @@ export default function PdfCard({ name, type, createdAt, size }) {
 
         {/* Title and Date */}
         <CardContent className="mt-4 px-6 text-left gap-2">
-          <h1 className="font-bold text-2xl truncate">{name ?? "Untitled"}</h1>
+          <h1 className="font-medium text-2xl truncate">
+            {name ?? "Untitled"}
+          </h1>
           <p className="text-sm mt-1">
             Uploaded on {createdAt?.split("T")[0]} <br />
             Size: {formatBytes(size)}
