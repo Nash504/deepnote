@@ -1,65 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
-import PdfCard from "./PdfCard";
 import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { motion } from "framer-motion";
 import { useUser } from "@clerk/nextjs";
 import { Progress } from "../ui/progress";
-import { Skeleton } from "../ui/skeleton"; // Assuming this is the correct import path for your project
-import CategoryToggle from "./CategoryToggle";
-// Skeleton component for the storage usage card using shadcn/ui Skeleton
+import { Skeleton } from "../ui/skeleton";
+import { HardDrive, Database, Cloud } from "lucide-react";
+// Skeleton component for the storage usage card
 const StorageCardSkeleton = () => (
-  <div className="mb-8">
-    <Skeleton className="h-5 w-1/2 mx-auto mb-2" />
-    <Card className="border-border shadow-sm">
+  <div className="mb-6">
+    <Card className="border-border shadow-sm bg-white/60">
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
             <Skeleton className="h-6 w-32 mb-2" />
             <Skeleton className="h-4 w-48" />
           </div>
-          <Skeleton className="h-6 w-16 rounded-full" />
+          <Skeleton className="h-10 w-10 rounded-full" />
         </div>
-        <Skeleton className="h-3 w-full" />
+        <Skeleton className="h-3 w-full mt-4" />
+        <div className="flex justify-between mt-2">
+          <Skeleton className="h-4 w-16" />
+          <Skeleton className="h-4 w-16" />
+          <Skeleton className="h-4 w-16" />
+        </div>
       </CardContent>
     </Card>
   </div>
 );
 
-// Skeleton component for an individual PDF card using shadcn/ui Skeleton
-const PdfCardSkeleton = () => (
-  <div className="w-full max-w-sm mx-auto">
-    <Card className="h-48 flex flex-col justify-between p-4">
-      <div className="space-y-2">
-        <Skeleton className="h-6 w-3/4" />
-        <Skeleton className="h-4 w-1/2" />
-      </div>
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-1/4" />
-      </div>
-      <div className="flex justify-end">
-        <Skeleton className="h-8 w-8 rounded-full" />
-      </div>
-    </Card>
-  </div>
-);
-
-const FileViewer = ({ category }) => {
-  const [questionPapers, setQuestionPapers] = useState([]);
-  const [notes, setNotes] = useState([]);
+const ProgressBar = () => {
   const [totalSize, setTotalSize] = useState(0);
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [qpSize, setQpSize] = useState(0);
+  const [notesSize, setNotesSize] = useState(0);
+  const [loading, setLoading] = useState(true);
   const { user } = useUser();
-  const [searchQuery, setSearchQuery] = useState("");
   const MAX_STORAGE_MB = 100;
   const percentUsed = (totalSize / (MAX_STORAGE_MB * 1024 * 1024)) * 100;
 
   useEffect(() => {
     if (!user) return;
 
-    const fetchFiles = async () => {
-      setLoading(true); // Start loading
+    const fetchStorageInfo = async () => {
+      setLoading(true);
       try {
         const userPath = `users/${user.id}/uploads`;
 
@@ -70,125 +54,108 @@ const FileViewer = ({ category }) => {
           supabase.storage.from("notes").list(userPath, { limit: 100 }),
         ]);
 
-        const getSize = async (bucket, files) => {
-          let total = 0;
-          if (!files) return { result: [], total: 0 };
-          const result = await Promise.all(
-            files.map(async (file) => {
-              // Note: Downloading the file just to get the size can be inefficient.
-              // If Supabase Storage API provides size in the `list` method in the future,
-              // that would be more optimal. For now, this approach is necessary.
-              const { data } = await supabase.storage
-                .from(bucket)
-                .download(`${userPath}/${file.name}`);
-              const size = data?.size || 0;
-              total += size;
-              return { ...file, size };
-            })
+        // Get sizes from metadata if available
+        let qpSizeTotal = 0;
+        if (qpList.data) {
+          qpSizeTotal = qpList.data.reduce(
+            (sum, file) => sum + (file.metadata?.size || 0),
+            0
           );
-          return { result, total };
-        };
-
-        let sizeSum = 0;
-
-        if (!qpList.error) {
-          const { result, total } = await getSize(
-            "question-papers",
-            qpList.data
-          );
-
-          setQuestionPapers(result);
-          sizeSum += total;
-        } else {
-          console.error("Error loading question papers:", qpList.error);
         }
 
-        if (!nList.error) {
-          const { result, total } = await getSize("notes", nList.data);
-          setNotes(result);
-          sizeSum += total;
-        } else {
-          console.error("Error loading notes:", nList.error);
+        let notesSizeTotal = 0;
+        if (nList.data) {
+          notesSizeTotal = nList.data.reduce(
+            (sum, file) => sum + (file.metadata?.size || 0),
+            0
+          );
         }
 
-        setTotalSize(sizeSum);
+        setQpSize(qpSizeTotal);
+        setNotesSize(notesSizeTotal);
+        setTotalSize(qpSizeTotal + notesSizeTotal);
       } catch (error) {
-        console.error("An error occurred while fetching files:", error);
+        console.error("Error fetching storage info:", error);
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     };
 
-    fetchFiles();
+    fetchStorageInfo();
   }, [user]);
 
-  // Render skeleton UI while loading
+  // Format bytes to human-readable format
+  const formatBytes = (bytes) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  };
+
+  const getColorClass = (percent) => {
+    if (percent < 50) return "bg-green-500";
+    if (percent < 80) return "bg-yellow-500";
+    return "bg-red-500";
+  };
+
   if (loading) {
-    return (
-      <>
-        <StorageCardSkeleton />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
-          {Array.from({ length: 8 }).map((_, index) => (
-            <PdfCardSkeleton key={index} />
-          ))}
-        </div>
-      </>
-    );
+    return <StorageCardSkeleton />;
   }
-
-  const maxLength = Math.max(notes.length, questionPapers.length);
-  const mixedItems = [];
-
-  for (let i = 0; i < maxLength; i++) {
-    if (notes[i]) mixedItems.push({ ...notes[i], type: "notes" });
-    if (questionPapers[i])
-      mixedItems.push({ ...questionPapers[i], type: "question-papers" });
-  }
-
-  let itemsToRender = [];
-  if (category === "all") itemsToRender = mixedItems;
-  else if (category === "notes")
-    itemsToRender = notes.map((n) => ({ ...n, type: "notes" }));
-  else if (category === "question-papers")
-    itemsToRender = questionPapers.map((qp) => ({
-      ...qp,
-      type: "question-papers",
-    }));
 
   return (
-    <>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <p className="text-center text-sm text-muted-foreground">
-          Total size: {(totalSize / 1024 / 1024).toFixed(2)} MB/100MB
-        </p>
-        <Card className="mb-8 border-border shadow-sm hover:shadow-md transition-shadow duration-200">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-semibold text-foreground">
-                  Storage Usage
-                </h3>
-                <p className="text-muted-foreground">
-                  {(totalSize / 1024 / 1024).toFixed(2)} MB of 100 MB used
-                </p>
-              </div>
-              <Badge
-                variant="outline"
-                className="border-accent-foreground/50 text-accent-foreground"
-              >
-                {percentUsed.toFixed(1)}% Full
-              </Badge>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="mb-8"
+    >
+      <Card className="border border-gray-200 shadow-sm bg-white backdrop-blur-sm hover:shadow transition-shadow duration-300">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-medium text-gray-800 flex items-center">
+                <HardDrive className="mr-2 h-5 w-5 text-primary" />
+                Storage Usage
+              </h3>
+              <p className="text-muted-foreground mt-1">
+                {formatBytes(totalSize)} of {MAX_STORAGE_MB} MB used
+              </p>
             </div>
-            <Progress value={percentUsed} className="h-3 bg-muted" />
-          </CardContent>
-        </Card>
-      </motion.div>
-    </>
+
+            <div className="bg-primary/10 text-primary font-semibold p-2 px-4 rounded-full flex items-center gap-2">
+              <Database className="h-4 w-4" />
+              {percentUsed.toFixed(1)}%
+            </div>
+          </div>
+
+          <div className="h-2.5 w-full bg-gray-200 rounded-full mb-1 overflow-hidden">
+            <div
+              className={`h-full rounded-full ${getColorClass(
+                percentUsed
+              )} transition-all duration-500`}
+              style={{ width: `${Math.min(percentUsed, 100)}%` }}
+            />
+          </div>
+
+          <div className="flex justify-between text-xs text-muted-foreground mt-2">
+            <div className="flex items-center">
+              <div className="h-3 w-3 rounded-full bg-primary/70 mr-1"></div>
+              Question Papers: {formatBytes(qpSize)}
+            </div>
+            <div className="flex items-center">
+              <div className="h-3 w-3 rounded-full bg-primary/40 mr-1"></div>
+              Notes: {formatBytes(notesSize)}
+            </div>
+            <div className="flex items-center">
+              <Cloud className="h-3 w-3 mr-1 text-gray-400" />
+              Available: {formatBytes(MAX_STORAGE_MB * 1024 * 1024 - totalSize)}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 };
 
-export default FileViewer;
+export default ProgressBar;
