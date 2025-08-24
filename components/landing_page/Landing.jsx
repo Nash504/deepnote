@@ -11,8 +11,8 @@ import {
 import { Button } from "../ui/button";
 
 import { Input } from "../ui/input";
-import { ArrowRight, Plus, Mic, Sparkles, FileText, Link } from "lucide-react";
-
+import { ArrowRight, Plus, Mic, Sparkles, FileText } from "lucide-react";
+import Link from "next/link";
 import { useInView } from "react-intersection-observer";
 
 import { useState, useEffect } from "react";

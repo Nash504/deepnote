@@ -242,7 +242,10 @@ export default function PdfCard({
                 <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-md">
                   <BookOpen className="mr-2 h-4 w-4" /> View Flashcards
                 </Button>
-                <Link href="/work/chat" className="w-full">
+                <Link
+                  href={`/work/${encodeURIComponent(name)}`}
+                  className="w-full"
+                >
                   <Button
                     variant="outline"
                     className="w-full border-indigo-200 text-indigo-700 hover:bg-indigo-50 transition-colors"
