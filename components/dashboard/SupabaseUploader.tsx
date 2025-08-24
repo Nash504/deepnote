@@ -55,7 +55,7 @@ export default function SupabaseUploader({ type }: { type: string }) {
             .from(type)
             .getPublicUrl(data.path);
           const fileUrl = publicData.publicUrl;
-          console.log(`Public URL for ${file.name}:`, fileUrl);
+          console.log(`Public URL for ${file.name}:`, fileUrl,`Type${type}`);
           // 3. Call Edge Function notify-file
           try {
             const { data: fnData, error: fnError } =
