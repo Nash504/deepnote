@@ -56,26 +56,55 @@ export default function SupabaseUploader({ type }: { type: string }) {
             .getPublicUrl(data.path);
           const fileUrl = publicData.publicUrl;
           console.log(`Public URL for ${file.name}:`, fileUrl,`Type${type}`);
-          // 3. Call Edge Function notify-file
-          try {
-            const { data: fnData, error: fnError } =
-              await supabase.functions.invoke("notify-file", {
-                body: {
-                  url: fileUrl,
-                  type,
-                },
-              });
+          // Call Flask backend notify-file endpoint
+try {
+  const response = await fetch('http://localhost:5000/notify-file', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      url: fileUrl,
+      type: type,
+    }),
+  });
 
-            if (fnError) {
-              console.error("Edge Function error:", fnError);
-            } else {
-              console.log("Edge Function response:", fnData);
-            }
-          } catch (err) {
-            console.error("Error calling notify-file:", err);
-          }
-        }
-      }
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const responseData = await response.json();
+  console.log("Flask backend response:", responseData);
+  
+  if (responseData.success) {
+    console.log("File processed successfully:", responseData.message);
+  } else {
+    console.error("Backend processing failed:", responseData.error);
+  }
+  
+} catch (err) {
+  console.error("Error calling notify-file:", err);
+}
+      //     // 3. Call Edge Function notify-file
+      //     try {
+      //       const { data: fnData, error: fnError } =
+      //         await supabase.functions.invoke("notify-file", {
+      //           body: {
+      //             url: fileUrl,
+      //             type,
+      //           },
+      //         });
+
+      //       if (fnError) {
+      //         console.error("Edge Function error:", fnError);
+      //       } else {
+      //         console.log("Edge Function response:", fnData);
+      //       }
+      //     } catch (err) {
+      //       console.error("Error calling notify-file:", err);
+      //     }
+      //   }
+      // }
 
       if (result.successful.length === 0) {
         return;
