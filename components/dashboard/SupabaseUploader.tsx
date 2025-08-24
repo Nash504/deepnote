@@ -55,7 +55,7 @@ export default function SupabaseUploader({ type }: { type: string }) {
             .from(type)
             .getPublicUrl(data.path);
           const fileUrl = publicData.publicUrl;
-          console.log(`Public URL for ${file.name}:`, fileUrl,`Type${type}`);
+          console.log(`Public URL for ${file.name}:`, fileUrl,`Type ${type}`);
           // Call Flask backend notify-file endpoint
 try {
   const response = await fetch('http://localhost:5000/notify-file', {
@@ -85,6 +85,8 @@ try {
 } catch (err) {
   console.error("Error calling notify-file:", err);
 }
+        }
+      }
       //     // 3. Call Edge Function notify-file
       //     try {
       //       const { data: fnData, error: fnError } =
