@@ -8,6 +8,7 @@ import {
   MessageSquare,
   BookOpen,
   Clock,
+  X,
 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
@@ -34,9 +35,29 @@ export default function PdfCard({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [maindialogOpen, setMainDialogOpen] = useState(false);
+  const [answersDialogOpen, setAnswersDialogOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [questionsData, setQuestionsData] = useState(null);
   const { user } = useUser();
   const userId = user?.id;
+
+  // Function to clean and parse the API response
+  const cleanApiResponse = (response) => {
+    try {
+      let cleanedAnswer = response.answer;
+      
+      // Remove markdown code blocks
+      cleanedAnswer = cleanedAnswer.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+      
+      // Parse the JSON
+      const parsedData = JSON.parse(cleanedAnswer);
+      return parsedData;
+    } catch (error) {
+      console.error('Error parsing API response:', error);
+      return null;
+    }
+  };
 
   const handleDelete = async () => {
     const { data, error } = await supabase.storage
@@ -261,12 +282,97 @@ export default function PdfCard({
                 </Button>
                 <Button
                   variant="outline"
-                  className="border-blue-200 text-blue-700 hover:bg-blue-50 transition-colors"
+                  onClick={async () => {
+                    if (isProcessing) return;
+                    
+                    setIsProcessing(true);
+                    try {
+                      const notesUrl = getPdfUrl();
+                      if (!notesUrl) {
+                        alert('Unable to access the PDF file');
+                        return;
+                      }
+                      
+                      const response = await fetch('/api/answer-paper', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          notes_url: notesUrl
+                        })
+                      });
+
+                      
+                      const result = await response.json();
+                      console.log('Answer paper API result:', result);
+                      
+                      if (!response.ok) {
+                        throw new Error(result.error || 'Failed to generate answers');
+                      }
+                      
+                      // Clean and parse the response
+                      const cleanedData = cleanApiResponse(result);
+                      if (cleanedData && cleanedData.questions) {
+                        setQuestionsData(cleanedData.questions);
+                        setMainDialogOpen(false);
+                        setAnswersDialogOpen(true);
+                      } else {
+                        throw new Error('Invalid response format');
+                      }
+                    } catch (error) {
+                      console.error('Error calling answer-paper API:', error);
+                      alert(`Error: ${error.message}`);
+                    } finally {
+                      setIsProcessing(false);
+                    }
+                  }}
+                  disabled={isProcessing}
+                  className="w-full border-blue-200 text-blue-700 hover:bg-blue-50 transition-colors"
                 >
-                  <MessageSquare className="mr-2 h-4 w-4" /> View Answers
+                  <MessageSquare className="mr-2 h-4 w-4" /> 
+                  {isProcessing ? 'Processing...' : 'View Answers'}
                 </Button>
               </div>
             )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Answers Modal */}
+        <Dialog open={answersDialogOpen} onOpenChange={setAnswersDialogOpen}>
+          <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto rounded-xl">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold text-blue-700">
+                Questions & Answers - {name}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6 mt-4">
+              {questionsData && questionsData.map((item, index) => (
+                <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                  <div className="mb-3">
+                    <h3 className="font-medium text-gray-900 text-sm mb-2">
+                      Question {index + 1}:
+                    </h3>
+                    <p className="text-gray-800 text-sm leading-relaxed">
+                      {item.question}
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-blue-700 text-sm mb-2">
+                      Answer:
+                    </h4>
+                    <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">
+                      {item.answer}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end mt-6">
+              <Button onClick={() => setAnswersDialogOpen(false)}>
+                Close
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
 

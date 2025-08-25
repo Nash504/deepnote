@@ -22,14 +22,20 @@ export default function ChatInterface({ pdfName }) {
     setIsLoading(true);
 
     try {
+      // No API call needed - using pdfName directly.disabled
+// const { data: publicData } = supabase.storage
+//   .from(type)
+//   .getPublicUrl(data.path);
+// const fileUrl = publicData.publicUrl;
+const fileUrl="https://xbcezaheqpgbffmcxjdr.supabase.co/storage/v1/object/public/question-papers/users/user_31jiuE2ivzqRToB4k9l5ROoONhE/uploads/OST_UNIT_III.pdf"
       // Call our backend API to get the AI's response
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           question: input,
-          pdfName: pdfName, // Send the name of the PDF we're chatting with
-          userId: user.id, // Send the user ID to locate the file in Supabase
+          pdfUrl: fileUrl, // Send the name of the PDF we're chatting with
+// Send the user ID to locate the file in Supabase
         }),
       });
 
